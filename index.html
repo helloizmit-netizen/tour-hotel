@@ -79,6 +79,8 @@
   .guestcopy:active{transform:scale(.98);}
   .guestcopy.done{background:linear-gradient(135deg,var(--green),#37a877);color:#06281a;}
   .card-actions{display:flex;gap:8px;margin-top:12px;}
+  .save-btn{flex:2;background:rgba(79,192,141,.14);color:var(--green);border:1px solid rgba(79,192,141,.45);border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;}
+  .save-btn:active{transform:scale(.98);}
   .del-btn{background:rgba(224,102,80,.1);color:var(--red);border:1px solid rgba(224,102,80,.3);border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;flex:1;}
   .empty{text-align:center;padding:46px 20px;color:var(--muted);}
   .empty .ic{font-size:44px;opacity:.5;}
@@ -121,8 +123,8 @@
 </div>
 <div class="fab"><button class="add" id="fabAdd">＋ 호텔 추가</button></div>
 <div class="saved-flash" id="flash">저장됨 ✓</div>
-<input type="file" id="schedInput" accept="image/*" capture="environment" hidden>
-<input type="file" id="photoInput" accept="image/*" capture="environment" hidden multiple>
+<input type="file" id="schedInput" accept="image/*" hidden>
+<input type="file" id="photoInput" accept="image/*" hidden multiple>
 <script>
 const CITIES=['이스탄불','앙카라','부르사','이즈미르','파묵칼레','카파도키아','콘야','안탈리아'];
 const CITY_HINTS={
@@ -235,7 +237,7 @@ function cardEl(h,idx){
       '<div class="field"><label>📸 메뉴판 / 가격 / 기타 사진</label><div class="photos" data-photos>'+h.photos.map((p,pi)=>'<div class="photo"><img src="'+p+'"><button class="x" data-act="rmphoto" data-pi="'+pi+'">×</button></div>').join('')+'<div class="addphoto" data-act="addphoto">＋</div></div></div>'+
       '<div class="field"><label>📝 메모</label><textarea data-f="notes" placeholder="특이사항, 픽업 위치...">'+escapeHtml(h.notes)+'</textarea></div>'+
       '<button class="guestcopy" data-act="copyguest">📤 고객 안내문 복사 (카카오톡 붙여넣기)</button>'+
-      '<div class="card-actions"><button class="del-btn" data-act="delete">🗑 이 호텔 삭제</button></div>'+
+      '<div class="card-actions"><button class="save-btn" data-act="savecard">✓ 저장하고 닫기</button><button class="del-btn" data-act="delete">🗑 삭제</button></div>'+
     '</div>';
   return c;
 }
@@ -258,6 +260,7 @@ document.getElementById('list').addEventListener('click',e=>{
   const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;
   const actEl=e.target.closest('[data-act]');const act=actEl?actEl.dataset.act:null;
   if(act==='copyguest'){copyGuest(h,actEl);return;}
+  if(act==='savecard'){save();h._open=false;render();toast('저장되었습니다 ✓');return;}
   if(act==='toggle'){h._open=!h._open;card.classList.toggle('open');return;}
   if(act==='autofill'){autofill(h);return;}
   if(act==='delete'){if(confirm('이 호텔을 삭제할까요?')){state.hotels=state.hotels.filter(x=>x.id!==h.id);save();render();}return;}
