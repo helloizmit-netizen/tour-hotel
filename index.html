@@ -316,53 +316,65 @@ function knownHotelNames(){
 }
 /* 비교용 정규화 */
 function normName(s){return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+/* 알려진 호텔 브랜드 (사전이 비어도 잡을 기본 목록) */
+const HOTEL_BRANDS=['PULLMAN','HILTON','HOLIDAY INN','GREEN PARK','RAMADA','RADISSON','SHERATON','MARRIOTT','NOVOTEL','MERCURE','IBIS','CROWNE PLAZA','WYNDHAM','DOUBLETREE','DEDEMAN','DIVAN','RIXOS','HYATT','CONRAD','SWISSOTEL','MOVENPICK','KAYA','LIMAK','TITANIC','RICHMOND','PERISSIA','SUHAN','LYCUS','RENEX','WANDA VISTA','KEMPINSKI','BAYIR DIAMOND','ADEM PIRA','ORTAHISAR','NUJELM','NG AFYON','TEMIZEL','NEWPARK','CHIRAGAN','DELTA','BAIA','CRYSTAL KAYMAKLI','DOGA THERMAL'];
 
-/* 알려진 호텔 브랜드 */
-const HOTEL_BRANDS=['PULLMAN','HILTON','HOLIDAY INN','GREEN PARK','RAMADA','RADISSON','SHERATON','MARRIOTT','NOVOTEL','MERCURE','IBIS','CROWNE PLAZA','WYNDHAM','DOUBLETREE','DEDEMAN','DIVAN','RIXOS','HYATT','HILTON GARDEN','CONRAD','SWISSOTEL','MOVENPICK','KAYA','LIMAK','TITANIC','ELITE WORLD','POINT','GRAND','PALACE','RESORT','SUITES'];
+/* 레벤슈타인 거리(편집 거리) — OCR 오타 흡수용 */
+function editDist(a,b){
+  a=a||'';b=b||'';const m=a.length,n=b.length;
+  if(!m)return n;if(!n)return m;
+  let prev=Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){
+    let cur=[i];
+    for(let j=1;j<=n;j++){
+      const cost=a[i-1]===b[j-1]?0:1;
+      cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+cost);
+    }
+    prev=cur;
+  }
+  return prev[n];
+}
+/* 두 정규화 문자열의 유사도(0~1) */
+function similarity(a,b){const d=editDist(a,b);const L=Math.max(a.length,b.length);return L?1-d/L:0;}
+
+/* 텍스트(정규화 전체)에 후보명이 정확히 포함되는지 */
+function containsExact(normText,name){const nk=normName(name);return nk.length>=3 && normText.includes(nk);}
+
+/* 텍스트의 단어 조각들 중 후보명과 유사한 게 있는지 (OCR 오타 대응) */
+function fuzzyInText(words,name){
+  const nk=normName(name);if(nk.length<4)return 0;
+  let best=0;
+  // 후보가 N단어면 텍스트에서 연속 N단어 묶음과 비교
+  const parts=name.trim().split(/\s+/).length;
+  for(let i=0;i<words.length;i++){
+    for(let span=1;span<=parts+1 && i+span<=words.length;span++){
+      const chunk=normName(words.slice(i,i+span).join(''));
+      if(chunk.length<3)continue;
+      const s=similarity(chunk,nk);
+      if(s>best)best=s;
+    }
+  }
+  return best;
+}
 
 function extractHotelCandidates(text){
-  const rawLines=text.split('\n').map(s=>s.trim()).filter(Boolean);
-  const fullUpper=text.toUpperCase();
+  const normText=normName(text);
+  const words=text.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>=2);
   const found=[];const seen=new Set();
   const push=(name,score)=>{const key=normName(name);if(key.length<3||seen.has(key))return;seen.add(key);found.push({name:name.trim().replace(/\s+/g,' '),score});};
 
-  // 1순위: 학습된(사전에 저장된) 호텔명이 텍스트에 보이면 최우선
-  knownHotelNames().forEach(kn=>{
-    const nk=normName(kn);
-    if(nk.length>=3 && normName(text).includes(nk))push(kn,100);
+  // 후보 풀: 학습된 사전 호텔명 + 기본 브랜드
+  const known=knownHotelNames();
+  const pool=[];
+  known.forEach(n=>pool.push({name:n,base:100}));
+  HOTEL_BRANDS.forEach(n=>{if(!pool.some(p=>normName(p.name)===normName(n)))pool.push({name:n,base:78});});
+
+  pool.forEach(p=>{
+    if(containsExact(normText,p.name)){push(p.name,p.base);return;}     // 정확 포함
+    const sim=fuzzyInText(words,p.name);
+    if(sim>=0.82)push(p.name,Math.round(p.base*sim)-10);                // 유사(오타) 매칭
   });
 
-  // 2순위: 알려진 브랜드명
-  HOTEL_BRANDS.forEach(b=>{
-    const re=new RegExp(b.replace(/\s+/g,'\\s*'),'i');
-    if(re.test(text))push(b,80);
-  });
-
-  // 3순위: 줄 단위로 호텔명다운 토큰 추출 (노이즈 강력 필터)
-  const STOP=/^(HOTEL|LUNCH|DINNER|DATE|CODE|PAX|COACH|ROOM|TYPE|STEP|NOTICE|ITINERARY|RESTAURANT|SCHEDULE|DESTINATION|BOOKING|SHEET|AIRLINE|CAFE|REST|TUR|TOUR|KEBOB|KEBAB|PARK|CLOSED|OPEN|MON|TUE|WED|THU|FRI|SAT|SUN|EURO|PAM|KAPA|SAFARI|BALON|MUSEUM|MOZESI|SARAYI|PALACE|MOSQUE|BAZAR|BAZAAR|CRUISE|PALAS)$/;
-  const tokenRe=/\b([A-Z][A-Za-z]{2,}(?:\s+[A-Z][A-Za-z]{2,}){0,2})\b/g;
-  rawLines.forEach(line=>{
-    if(line.length>34)return;            // 설명문 제외
-    if(/[가-힣]/.test(line))return;       // 한글 섞인 줄 제외(메뉴·관광지)
-    if(/\d{2}[:.]\d{2}/.test(line))return;// 시간 줄 제외
-    let m;
-    while((m=tokenRe.exec(line))!==null){
-      const cand=m[1].trim();const up=cand.toUpperCase();
-      const words=cand.split(/\s+/);
-      // 노이즈 필터: 한 단어인데 4글자 미만이면 제외(XIX, YEE, AHF 등 컷)
-      if(words.length===1 && cand.length<5)continue;
-      // 각 단어가 STOP 단어면 제외
-      if(words.some(w=>STOP.test(w.toUpperCase())))continue;
-      // 모음이 하나도 없는 자음 덩어리(SCT 등) 제외
-      if(!/[AEIOU]/i.test(cand))continue;
-      // 같은 글자 3연속 등 비정상 제외
-      if(/(.)\1\1/i.test(cand))continue;
-      let score=words.length>=2?60:35;   // 2단어 이상이면 호텔명일 확률↑
-      push(cand,score);
-    }
-  });
-
-  // 점수 높은 순 정렬
   found.sort((a,b)=>b.score-a.score);
   return found;
 }
@@ -385,8 +397,13 @@ function startOcr(dataUrl){
 }
 
 function showCandidates(cands){
-  // 학습/브랜드(점수 high)는 기본 체크, 그 외 추정은 체크 해제 상태로
-  ocrCandidates=cands.map(c=>({name:c.name,city:guessCity(c.name),sel:c.score>=60}));
+  // 사전/브랜드 기반이라 노이즈가 적음 → 기본 체크. 도시는 사전 우선, 없으면 추정
+  ocrCandidates=cands.map(c=>{
+    let city='';const lib=loadLib();
+    Object.keys(lib).forEach(k=>{if(lib[k]&&normName(lib[k].name)===normName(c.name)&&lib[k].city)city=lib[k].city;});
+    if(!city)city=guessCity(c.name);
+    return {name:c.name,city:city,sel:c.score>=50};
+  });
   const body=document.getElementById('ocrBody');const sub=document.getElementById('ocrSub');
   const high=ocrCandidates.filter(c=>c.sel).length;
   if(ocrCandidates.length===0){
