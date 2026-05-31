@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>투어 호텔 노트</title>
+<style>
+  :root{--bg:#0e1419;--surface:#161f29;--surface2:#1e2a36;--line:#2a3744;--text:#e8eef3;--muted:#8a9aab;--accent:#e8a33d;--accent2:#3da6e8;--green:#4fc08d;--red:#e06650;--radius:16px;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{font-family:'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;background:radial-gradient(900px 500px at 90% -10%, rgba(232,163,61,.10), transparent 60%),radial-gradient(700px 500px at -10% 110%, rgba(61,166,232,.08), transparent 55%),var(--bg);color:var(--text);min-height:100vh;padding-bottom:96px;}
+  .wrap{max-width:560px;margin:0 auto;padding:0 16px;}
+  header{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(14,20,25,.82);border-bottom:1px solid var(--line);}
+  .head-in{max-width:560px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#c97f1a);display:grid;place-items:center;font-size:18px;box-shadow:0 4px 14px rgba(232,163,61,.35);}
+  .brand h1{font-size:17px;margin:0;letter-spacing:.3px;}
+  .brand span{font-size:11px;color:var(--muted);display:block;margin-top:1px;}
+  .count-pill{font-size:12px;color:var(--accent);background:rgba(232,163,61,.12);border:1px solid rgba(232,163,61,.3);padding:5px 11px;border-radius:999px;font-weight:600;}
+  .upload{margin:18px 0 8px;border:1.5px dashed var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--surface),rgba(22,31,41,.4));padding:22px 18px;text-align:center;}
+  .upload .ic{font-size:30px;}
+  .upload .t{font-weight:600;margin-top:6px;}
+  .upload .s{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
+  .btn-row{display:flex;gap:10px;margin-top:14px;}
+  .btn{flex:1;border:none;cursor:pointer;font-family:inherit;font-weight:600;padding:12px;border-radius:12px;font-size:14px;transition:.15s;}
+  .btn:active{transform:scale(.97);}
+  .btn-pri{background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;}
+  .btn-sec{background:var(--surface2);color:var(--text);border:1px solid var(--line);}
+  .sched-thumb{margin-top:12px;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  .sched-thumb img{width:100%;display:block;}
+  .sched-thumb .rm{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;}
+  .toolbar{display:flex;align-items:center;gap:8px;margin:22px 4px 12px;flex-wrap:wrap;}
+  .toolbar .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-right:auto;}
+  .citychips{display:flex;gap:7px;overflow-x:auto;padding:4px 16px 8px;margin:0 -16px;-webkit-overflow-scrolling:touch;}
+  .citychips::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0;font-size:13px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s;}
+  .chip.active{background:rgba(61,166,232,.15);border-color:var(--accent2);color:var(--accent2);font-weight:600;}
+  .chip .n{font-size:10px;opacity:.7;margin-left:3px;}
+  select.sortsel{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-family:inherit;font-size:12.5px;}
+  .card{background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.25);}
+  .card-head{padding:15px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
+  .daybadge{flex-shrink:0;width:46px;height:46px;border-radius:12px;background:rgba(61,166,232,.14);border:1px solid rgba(61,166,232,.3);display:grid;place-items:center;text-align:center;line-height:1.05;}
+  .daybadge b{font-size:17px;color:var(--accent2);}
+  .daybadge small{font-size:9px;color:var(--muted);}
+  .card-head .meta{flex:1;min-width:0;}
+  .card-head .hname{font-size:16px;font-weight:700;margin:0;}
+  .card-head .hsub{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+  .citytag{font-size:10.5px;padding:2px 8px;border-radius:6px;background:rgba(232,163,61,.12);border:1px solid rgba(232,163,61,.3);color:var(--accent);}
+  .chev{color:var(--muted);font-size:13px;transition:.2s;margin-top:4px;}
+  .card.open .chev{transform:rotate(90deg);}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .tag{font-size:10.5px;padding:3px 8px;border-radius:6px;background:var(--surface);border:1px solid var(--line);color:var(--muted);}
+  .tag.on{color:var(--green);border-color:rgba(79,192,141,.4);background:rgba(79,192,141,.1);}
+  .tag.off{color:var(--red);border-color:rgba(224,102,80,.35);background:rgba(224,102,80,.08);}
+  .card-body{display:none;border-top:1px solid var(--line);padding:4px 16px 16px;}
+  .card.open .card-body{display:block;}
+  .field{margin-top:14px;}
+  .field label{font-size:11.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+  .field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 12px;outline:none;transition:.15s;}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent2);}
+  .field textarea{resize:vertical;min-height:54px;}
+  .two{display:flex;gap:10px;}
+  .two .field{flex:1;}
+  .namerow{display:flex;gap:8px;align-items:flex-end;}
+  .namerow .field{flex:1;margin-top:14px;}
+  .autofill{flex-shrink:0;height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(61,166,232,.4);background:rgba(61,166,232,.12);color:var(--accent2);font-family:inherit;font-weight:600;font-size:12.5px;cursor:pointer;white-space:nowrap;}
+  .autofill:active{transform:scale(.96);}
+  .toggle-row{display:flex;gap:8px;margin-top:14px;}
+  .tg{flex:1;text-align:center;padding:11px 6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-size:12.5px;color:var(--muted);transition:.15s;user-select:none;}
+  .tg .ti{font-size:17px;display:block;margin-bottom:3px;}
+  .tg.active-yes{border-color:rgba(79,192,141,.5);background:rgba(79,192,141,.12);color:var(--green);}
+  .tg.active-no{border-color:rgba(224,102,80,.45);background:rgba(224,102,80,.1);color:var(--red);}
+  .photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .photo{position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;border:1px solid var(--line);}
+  .photo img{width:100%;height:100%;object-fit:cover;}
+  .photo .x{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:12px;line-height:1;cursor:pointer;}
+  .addphoto{width:74px;height:74px;border-radius:10px;border:1.5px dashed var(--line);background:var(--bg);display:grid;place-items:center;cursor:pointer;color:var(--muted);font-size:22px;}
+  .guestcopy{margin-top:18px;width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(232,163,61,.3);transition:.15s;}
+  .guestcopy:active{transform:scale(.98);}
+  .guestcopy.done{background:linear-gradient(135deg,var(--green),#37a877);color:#06281a;}
+  .card-actions{display:flex;gap:8px;margin-top:12px;}
+  .del-btn{background:rgba(224,102,80,.1);color:var(--red);border:1px solid rgba(224,102,80,.3);border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;flex:1;}
+  .empty{text-align:center;padding:46px 20px;color:var(--muted);}
+  .empty .ic{font-size:44px;opacity:.5;}
+  .empty p{font-size:13.5px;line-height:1.6;margin-top:10px;}
+  .fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:40;max-width:528px;width:calc(100% - 32px);display:flex;gap:10px;}
+  .fab button{flex:1;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:15px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+  .fab .add{background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;}
+  .saved-flash{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--green);color:#06281a;padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;transition:.3s;z-index:50;pointer-events:none;max-width:90%;text-align:center;}
+  .saved-flash.show{opacity:1;}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-in">
+    <div class="brand"><div class="logo">🏨</div><div><h1>투어 호텔 노트</h1><span>가이드 전용 · 자동 저장</span></div></div>
+    <div class="count-pill" id="countPill">0곳</div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="upload" id="uploadZone">
+    <div class="ic">📋</div>
+    <div class="t">일정표 사진 올리기</div>
+    <div class="s">사진을 올리면 호텔 이름을 자동으로 읽어 카드를 만들어요.<br>인식이 안 되면 직접 추가할 수 있어요.</div>
+    <div class="btn-row">
+      <button class="btn btn-pri" id="btnSchedule">📷 일정표 첨부</button>
+      <button class="btn btn-sec" id="btnManual">+ 직접 추가</button>
+    </div>
+    <div id="schedThumbWrap"></div>
+  </div>
+  <div class="toolbar">
+    <span class="lbl">방문 호텔</span>
+    <select class="sortsel" id="sortSel">
+      <option value="order">일정 순서</option>
+      <option value="city">도시별</option>
+      <option value="name">이름순</option>
+    </select>
+  </div>
+  <div class="citychips" id="cityChips"></div>
+  <div id="list"></div>
+</div>
+<div class="fab"><button class="add" id="fabAdd">＋ 호텔 추가</button></div>
+<div class="saved-flash" id="flash">저장됨 ✓</div>
+<input type="file" id="schedInput" accept="image/*" capture="environment" hidden>
+<input type="file" id="photoInput" accept="image/*" capture="environment" hidden multiple>
+<script>
+const CITIES=['이스탄불','앙카라','부르사','이즈미르','파묵칼레','카파도키아','콘야','안탈리아'];
+const CITY_HINTS={
+  '이스탄불':['istanbul','이스탄불','sultanahmet','술탄','taksim','탁심','bosphorus','보스포러스','fatih'],
+  '앙카라':['ankara','앙카라','kizilay','kızılay'],
+  '부르사':['bursa','부르사','uludag','uludağ','울루다'],
+  '이즈미르':['izmir','이즈미르','alsancak','kusadasi','kuşadası','쿠샤다스','ephesus','에페소','셀축','selcuk','selçuk'],
+  '파묵칼레':['pamukkale','파묵칼레','hierapolis','히에라폴리스','denizli','데니즐리'],
+  '카파도키아':['cappadocia','kapadokya','카파도키아','goreme','göreme','괴레메','uchisar','우치사르','urgup','ürgüp','네브셰히르','nevsehir'],
+  '콘야':['konya','콘야','mevlana','메블라나'],
+  '안탈리아':['antalya','안탈리아','kaleici','kaleiçi','lara','벨렉','belek']
+};
+const CITY_DEFAULTS={
+  '이스탄불':{breakfast:'07:00~10:00',alcohol:true},'앙카라':{breakfast:'07:00~09:30',alcohol:true},
+  '부르사':{breakfast:'07:00~09:30',alcohol:false},'이즈미르':{breakfast:'07:00~10:00',alcohol:true},
+  '파묵칼레':{breakfast:'07:30~09:30',alcohol:true},'카파도키아':{breakfast:'07:00~10:00',alcohol:true},
+  '콘야':{breakfast:'07:00~09:00',alcohol:false},'안탈리아':{breakfast:'07:00~10:00',alcohol:true}
+};
+const KEY='tour_hotel_notes_v3';
+let state=load();let activePhotoHotel=null;let filterCity='전체';let sortMode='order';
+
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{schedule:null,hotels:[]};}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));flash();}catch(e){alert('저장 공간이 부족합니다. 사진 수를 줄여주세요.');}}
+function flash(){const f=document.getElementById('flash');f.textContent='저장됨 ✓';f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1100);}
+function toast(msg){const f=document.getElementById('flash');f.textContent=msg;f.classList.add('show');setTimeout(()=>f.classList.remove('show'),2400);}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function blankHotel(name='',dayLabel='',city=''){return{id:uid(),name,dayLabel,city,wifiName:'',wifiPw:'',breakfast:'',dinner:'',structure:'',elevator:null,alcohol:null,notes:'',photos:[]};}
+function guessCity(text){const t=(text||'').toLowerCase();for(const c of CITIES){for(const kw of CITY_HINTS[c]){if(t.includes(kw.toLowerCase()))return c;}}return '';}
+
+/* 고객 안내문 (카카오톡용 꾸민 문구) */
+function buildGuestMessage(h){
+  const L=[];
+  L.push('🏨 오늘의 숙소 안내');
+  L.push('━━━━━━━━━━━━━');
+  L.push('');
+  L.push('🏨 호텔  '+(h.name||'-'));
+  L.push('');
+  L.push('📶 와이파이');
+  L.push('   • 이름  '+(h.wifiName||'-'));
+  L.push('   • 비밀번호  '+(h.wifiPw||'-'));
+  L.push('');
+  L.push('🍳 익일 조식 제공 시간  '+(h.breakfast?h.breakfast.split('~')[0].trim():'-')+' 부터');
+  L.push('');
+  L.push('━━━━━━━━━━━━━');
+  L.push('와이파이 접속이 어려우신 분들은 로비 또는 석식 시간에 제가 도움드리겠습니다.');
+  return L.join('\n');
+}
+function copyGuest(h,btn){
+  const msg=buildGuestMessage(h);
+  const done=()=>{if(btn){btn.classList.add('done');const o=btn.textContent;btn.textContent='✓ 복사 완료! 카카오톡에 붙여넣으세요';setTimeout(()=>{btn.classList.remove('done');btn.textContent=o;},1800);}toast('안내문이 복사되었어요');};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(done).catch(()=>fb(msg,done));}
+  else fb(msg,done);
+}
+function fb(txt,cb){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');cb();}catch(e){alert('복사 실패. 길게 눌러 복사하세요.');}document.body.removeChild(ta);}
+
+function autofill(h){
+  let filled=[];
+  if(!h.city){const g=guessCity(h.name);if(g){h.city=g;filled.push('도시');}}
+  if(h.city&&CITY_DEFAULTS[h.city]){const d=CITY_DEFAULTS[h.city];if(!h.breakfast&&d.breakfast){h.breakfast=d.breakfast;filled.push('조식시간');}if(h.alcohol===null&&typeof d.alcohol==='boolean'){h.alcohol=d.alcohol;filled.push('주류');}}
+  localStorage.setItem(KEY,JSON.stringify(state));render();reopenAndScroll(h.id);
+  if(filled.length)toast('자동 채움: '+filled.join(', ')+' (확인 후 수정)');
+  else toast('내장 정보로는 더 채울 게 없어요. 도시를 선택해 보세요.');
+}
+function promptHotelsFromSchedule(){
+  const txt=prompt('일정표의 호텔 이름을 줄바꿈 또는 쉼표로 입력하세요.\n예) Day1 Istanbul Grand Hotel, Day2 Cappadocia Cave Resort','');
+  if(!txt)return;
+  const names=txt.split(/[\n,]/).map(s=>s.trim()).filter(Boolean);
+  let day=state.hotels.length;
+  names.forEach(n=>{day++;const m=n.match(/(?:day\s*)?(\d+)?\s*[.\-:]?\s*(.+)/i);const nm=m&&m[2]?m[2].trim():n;state.hotels.push(blankHotel(nm,m&&m[1]?'Day '+m[1]:'Day '+day,guessCity(nm)));});
+  save();render();
+}
+function cityCounts(){const c={};state.hotels.forEach(h=>{if(h.city)c[h.city]=(c[h.city]||0)+1;});return c;}
+function renderChips(){const box=document.getElementById('cityChips');const counts=cityCounts();let html='<div class="chip '+(filterCity==='전체'?'active':'')+'" data-city="전체">전체<span class="n">'+state.hotels.length+'</span></div>';CITIES.forEach(c=>{const n=counts[c]||0;html+='<div class="chip '+(filterCity===c?'active':'')+'" data-city="'+c+'">'+c+(n?'<span class="n">'+n+'</span>':'')+'</div>';});box.innerHTML=html;}
+function visibleHotels(){let arr=state.hotels.map((h,i)=>({h,i}));if(filterCity!=='전체')arr=arr.filter(x=>x.h.city===filterCity);if(sortMode==='city')arr.sort((a,b)=>(a.h.city||'힣').localeCompare(b.h.city||'힣','ko')||a.i-b.i);else if(sortMode==='name')arr.sort((a,b)=>(a.h.name||'').localeCompare(b.h.name||'','ko'));return arr;}
+
+function render(){
+  document.getElementById('countPill').textContent=state.hotels.length+'곳';
+  const sw=document.getElementById('schedThumbWrap');sw.innerHTML='';
+  if(state.schedule){const d=document.createElement('div');d.className='sched-thumb';d.innerHTML='<img src="'+state.schedule+'"><button class="rm" data-act="rmsched">×</button>';sw.appendChild(d);}
+  renderChips();
+  const list=document.getElementById('list');list.innerHTML='';
+  const vis=visibleHotels();
+  if(vis.length===0){list.innerHTML='<div class="empty"><div class="ic">🛏️</div><p>'+(state.hotels.length===0?'아직 등록된 호텔이 없어요.<br>일정표를 올리거나 직접 추가해 보세요.':'이 도시에 등록된 호텔이 없어요.')+'</p></div>';return;}
+  vis.forEach(x=>list.appendChild(cardEl(x.h,x.i)));
+}
+function cardEl(h,idx){
+  const c=document.createElement('div');c.className='card'+(h._open?' open':'');c.dataset.id=h.id;
+  const tags=[];
+  if(h.elevator===true)tags.push('<span class="tag on">엘리베이터 ✓</span>');
+  if(h.elevator===false)tags.push('<span class="tag off">엘리베이터 ✗</span>');
+  if(h.alcohol===true)tags.push('<span class="tag on">주류판매 ✓</span>');
+  if(h.alcohol===false)tags.push('<span class="tag off">주류 ✗</span>');
+  if(h.photos.length)tags.push('<span class="tag">📷 '+h.photos.length+'</span>');
+  const cityOpts=['<option value="">도시 선택</option>'].concat(CITIES.map(ci=>'<option value="'+ci+'" '+(h.city===ci?'selected':'')+'>'+ci+'</option>')).join('');
+  c.innerHTML=
+    '<div class="card-head" data-act="toggle">'+
+      '<div class="daybadge"><b>'+(idx+1)+'</b><small>'+(escapeHtml(h.dayLabel)||'호텔')+'</small></div>'+
+      '<div class="meta"><p class="hname">'+(escapeHtml(h.name)||'(호텔명 미입력)')+'</p>'+
+      '<div class="hsub">'+(h.city?'<span class="citytag">'+h.city+'</span>':'도시 미지정')+'</div>'+
+      '<div class="tags">'+tags.join('')+'</div></div>'+
+      '<div class="chev">▶</div></div>'+
+    '<div class="card-body">'+
+      '<div class="namerow"><div class="field"><label>🏨 호텔명</label><input data-f="name" value="'+escapeAttr(h.name)+'" placeholder="호텔 이름"></div><button class="autofill" data-act="autofill">⚡ 자동채우기</button></div>'+
+      '<div class="two"><div class="field"><label>📅 일자</label><input data-f="dayLabel" value="'+escapeAttr(h.dayLabel)+'" placeholder="Day 1"></div><div class="field"><label>🌆 도시</label><select data-f="city">'+cityOpts+'</select></div></div>'+
+      '<div class="two"><div class="field"><label>📶 와이파이 이름</label><input data-f="wifiName" value="'+escapeAttr(h.wifiName)+'" placeholder="SSID"></div><div class="field"><label>🔑 와이파이 비밀번호</label><input data-f="wifiPw" value="'+escapeAttr(h.wifiPw)+'" placeholder="PW"></div></div>'+
+      '<div class="two"><div class="field"><label>🍳 조식 시간</label><input data-f="breakfast" value="'+escapeAttr(h.breakfast)+'" placeholder="07:00~09:30"></div><div class="field"><label>🍽️ 석식 시간</label><input data-f="dinner" value="'+escapeAttr(h.dinner)+'" placeholder="18:00~20:00"></div></div>'+
+      '<div class="field"><label>🏗️ 호텔 구조 / 층수</label><input data-f="structure" value="'+escapeAttr(h.structure)+'" placeholder="본관 5층, 별관 2층 등"></div>'+
+      '<div class="field" style="margin-bottom:0"><label>🛗 엘리베이터</label></div><div class="toggle-row" data-grp="elevator"><div class="tg '+(h.elevator===true?'active-yes':'')+'" data-val="yes"><span class="ti">✓</span>있음</div><div class="tg '+(h.elevator===false?'active-no':'')+'" data-val="no"><span class="ti">✗</span>없음</div></div>'+
+      '<div class="field" style="margin-bottom:0"><label>🍷 주류 판매</label></div><div class="toggle-row" data-grp="alcohol"><div class="tg '+(h.alcohol===true?'active-yes':'')+'" data-val="yes"><span class="ti">✓</span>판매</div><div class="tg '+(h.alcohol===false?'active-no':'')+'" data-val="no"><span class="ti">✗</span>없음</div></div>'+
+      '<div class="field"><label>📸 메뉴판 / 가격 / 기타 사진</label><div class="photos" data-photos>'+h.photos.map((p,pi)=>'<div class="photo"><img src="'+p+'"><button class="x" data-act="rmphoto" data-pi="'+pi+'">×</button></div>').join('')+'<div class="addphoto" data-act="addphoto">＋</div></div></div>'+
+      '<div class="field"><label>📝 메모</label><textarea data-f="notes" placeholder="특이사항, 픽업 위치...">'+escapeHtml(h.notes)+'</textarea></div>'+
+      '<button class="guestcopy" data-act="copyguest">📤 고객 안내문 복사 (카카오톡 붙여넣기)</button>'+
+      '<div class="card-actions"><button class="del-btn" data-act="delete">🗑 이 호텔 삭제</button></div>'+
+    '</div>';
+  return c;
+}
+function escapeHtml(s){return(s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
+function escapeAttr(s){return(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+
+document.getElementById('btnSchedule').onclick=()=>document.getElementById('schedInput').click();
+document.getElementById('uploadZone').addEventListener('click',e=>{if(e.target.dataset.act==='rmsched'){state.schedule=null;save();render();}});
+document.getElementById('btnManual').onclick=addHotel;
+document.getElementById('fabAdd').onclick=addHotel;
+document.getElementById('sortSel').onchange=e=>{sortMode=e.target.value;render();};
+document.getElementById('cityChips').addEventListener('click',e=>{const ch=e.target.closest('.chip');if(ch){filterCity=ch.dataset.city;render();}});
+
+function addHotel(){const h=blankHotel('','Day '+(state.hotels.length+1),filterCity!=='전체'?filterCity:'');h._open=true;state.hotels.push(h);save();render();setTimeout(()=>{const el=document.querySelector('[data-id="'+h.id+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},80);}
+document.getElementById('schedInput').onchange=function(e){const f=e.target.files[0];if(!f)return;resizeImage(f,1000,d=>{state.schedule=d;save();render();setTimeout(promptHotelsFromSchedule,150);});e.target.value='';};
+document.getElementById('photoInput').onchange=function(e){const files=[...e.target.files];if(!files.length||!activePhotoHotel)return;const h=state.hotels.find(x=>x.id===activePhotoHotel);if(!h)return;let done=0;files.forEach(f=>resizeImage(f,900,d=>{h.photos.push(d);done++;if(done===files.length){save();render();reopenAndScroll(h.id);}}));e.target.value='';};
+
+document.getElementById('list').addEventListener('click',e=>{
+  const card=e.target.closest('.card');if(!card)return;
+  const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;
+  const actEl=e.target.closest('[data-act]');const act=actEl?actEl.dataset.act:null;
+  if(act==='copyguest'){copyGuest(h,actEl);return;}
+  if(act==='toggle'){h._open=!h._open;card.classList.toggle('open');return;}
+  if(act==='autofill'){autofill(h);return;}
+  if(act==='delete'){if(confirm('이 호텔을 삭제할까요?')){state.hotels=state.hotels.filter(x=>x.id!==h.id);save();render();}return;}
+  if(act==='addphoto'){activePhotoHotel=h.id;document.getElementById('photoInput').click();return;}
+  if(act==='rmphoto'){h.photos.splice(+e.target.dataset.pi,1);save();render();reopenAndScroll(h.id);return;}
+  const tg=e.target.closest('.tg');
+  if(tg){const grp=tg.closest('[data-grp]').dataset.grp;const val=tg.dataset.val==='yes';h[grp]=(h[grp]===val)?null:val;save();render();reopenAndScroll(h.id);}
+});
+document.getElementById('list').addEventListener('change',e=>{if(e.target.dataset.f==='city'){const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);if(h){h.city=e.target.value;save();render();reopenAndScroll(h.id);}}});
+let saveTimer;
+document.getElementById('list').addEventListener('input',e=>{const f=e.target.dataset.f;if(!f||f==='city')return;const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;h[f]=e.target.value;if(f==='name')card.querySelector('.hname').textContent=h.name||'(호텔명 미입력)';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(state));flash();},500);});
+function reopenAndScroll(id){const h=state.hotels.find(x=>x.id===id);if(h)h._open=true;render();setTimeout(()=>{const el=document.querySelector('[data-id="'+id+'"]');if(el)el.scrollIntoView({block:'center'});},50);}
+function resizeImage(file,maxW,cb){const img=new Image();const fr=new FileReader();fr.onload=()=>{img.onload=()=>{let w=img.width,hh=img.height;if(w>maxW){hh=hh*maxW/w;w=maxW;}const cv=document.createElement('canvas');cv.width=w;cv.height=hh;cv.getContext('2d').drawImage(img,0,0,w,hh);cb(cv.toDataURL('image/jpeg',0.72));};img.src=fr.result;};fr.readAsDataURL(file);}
+render();
+if('serviceWorker' in navigator){const sw='const C="tourhotel-v3";self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>self.clients.claim());self.addEventListener("fetch",e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))});';const blob=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});}
+</script>
+</body>
+</html>
