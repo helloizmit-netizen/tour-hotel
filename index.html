@@ -213,8 +213,8 @@ function normKey(city,name){
 /* 과거 일정표에서 추출한 호텔명 시드 (최초 1회 주입, 학습 출발점) */
 const SEED_HOTELS={
   '이스탄불':['PULLMAN','CROWNE PLAZA HARBIYE','SHERATON ATAKOY','CHIRAGAN PALACE KEMPINSKI','DELTA ISTANBUL WEST','WANDA VISTA','MARRIOTT PENDIK','SHERATON ISTANBUL ESENYURT'],
-  '앙카라':['NEWPARK ANKARA','GRAND ANKARA HOTEL'],
-  '카파도키아':['ORTAHISAR KAYA','ORTAHISAR CAVE','DOUBLETREE BY HILTON AVANOS','ALP','CRYSTAL KAYMAKLI','SUHAN','PERISSIA'],
+  '앙카라':['NEWPARK ANKARA','GRAND ANKARA HOTEL','GREEN PARK'],
+  '카파도키아':['ORTAHISAR CAVE','DOUBLETREE BY HILTON AVANOS','ALP','CRYSTAL KAYMAKLI','SUHAN','PERISSIA','NUJELM'],
   '아피온':['NG AFYON'],
   '콘야':['NOVOTEL KONYA','GRAND KONYA','RAMADA KONYA','BAYIR DIAMOND'],
   '안탈리아':['HOLIDAY INN LARA','DOUBLETREE BY HILTON ANTALYA'],
@@ -224,7 +224,7 @@ const SEED_HOTELS={
   '부르사':['BAIA BURSA'],
   '아이발륵':['GRAND TEMIZEL']
 };
-const SEED_FLAG='tour_hotel_seed_done_v3';
+const SEED_FLAG='tour_hotel_seed_done_v5';
 function seedLibraryOnce(){
   if(localStorage.getItem(SEED_FLAG))return;        // 이미 이 버전 주입했으면 건너뜀
   const lib=loadLib();
@@ -372,7 +372,10 @@ function extractHotelCandidates(text){
   pool.forEach(p=>{
     if(containsExact(normText,p.name)){push(p.name,p.base);return;}     // 정확 포함
     const sim=fuzzyInText(words,p.name);
-    if(sim>=0.82)push(p.name,Math.round(p.base*sim)-10);                // 유사(오타) 매칭
+    if(sim>=0.80){push(p.name,Math.round(p.base*sim)-10);return;}        // 유사(오타) 매칭
+    // 두 단어 이상 호텔명은 구별력 있는 단어(5글자 이상)가 텍스트에 정확히 있으면 인정
+    const distinct=p.name.trim().split(/\s+/).filter(w=>w.length>=5 && !/^(HOTEL|GRAND|PALACE|RESORT|SPA|SUITE|SUIT|BY)$/i.test(w));
+    if(distinct.length && distinct.some(w=>normText.includes(normName(w))))push(p.name,p.base-25);
   });
 
   found.sort((a,b)=>b.score-a.score);
