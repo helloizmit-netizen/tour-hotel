@@ -86,6 +86,8 @@
   .guestcopy{margin-top:18px;width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(232,163,61,.3);transition:.15s;}
   .guestcopy:active{transform:scale(.98);}
   .guestcopy.done{background:linear-gradient(135deg,var(--green),#37a877);color:#06281a;}
+  .mapbtn{margin-top:16px;width:100%;padding:12px;border-radius:11px;border:1px solid rgba(61,166,232,.45);background:rgba(61,166,232,.12);color:var(--accent2);font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;transition:.15s;}
+  .mapbtn:active{transform:scale(.98);}
   .card-actions{display:flex;gap:8px;margin-top:12px;}
   .save-btn{flex:2;background:rgba(79,192,141,.14);color:var(--green);border:1px solid rgba(79,192,141,.45);border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;}
   .save-btn:active{transform:scale(.98);}
@@ -175,23 +177,29 @@
 <input type="file" id="photoInput" accept="image/*" hidden multiple>
 <input type="file" id="restoreInput" accept="application/json,.json" hidden>
 <script>
-const CITIES=['이스탄불','앙카라','부르사','이즈미르','파묵칼레','카파도키아','콘야','안탈리아'];
+const CITIES=['이스탄불','앙카라','부르사','이즈미르','쿠샤다스','파묵칼레','카파도키아','콘야','안탈리아','아피온','아이발륵'];
 const CITY_HINTS={
   '이스탄불':['istanbul','이스탄불','sultanahmet','술탄','taksim','탁심','bosphorus','보스포러스','fatih'],
   '앙카라':['ankara','앙카라','kizilay','kızılay'],
   '부르사':['bursa','부르사','uludag','uludağ','울루다'],
-  '이즈미르':['izmir','이즈미르','alsancak','kusadasi','kuşadası','쿠샤다스','ephesus','에페소','셀축','selcuk','selçuk'],
+  '이즈미르':['izmir','이즈미르','alsancak','ephesus','에페소','셀축','selcuk','selçuk'],
+  '쿠샤다스':['kusadasi','kuşadası','쿠샤다스','쿠사다스'],
   '파묵칼레':['pamukkale','파묵칼레','hierapolis','히에라폴리스','denizli','데니즐리'],
-  '카파도키아':['cappadocia','kapadokya','카파도키아','goreme','göreme','괴레메','uchisar','우치사르','urgup','ürgüp','네브셰히르','nevsehir'],
+  '카파도키아':['cappadocia','kapadokya','카파도키아','goreme','göreme','괴레메','uchisar','우치사르','urgup','ürgüp','네브셰히르','nevsehir','avanos','아바노스','kaymakli','카이막르'],
   '콘야':['konya','콘야','mevlana','메블라나'],
-  '안탈리아':['antalya','안탈리아','kaleici','kaleiçi','lara','벨렉','belek']
+  '안탈리아':['antalya','안탈리아','kaleici','kaleiçi','lara','벨렉','belek'],
+  '아피온':['afyon','아피온','afyonkarahisar'],
+  '아이발륵':['ayvalik','ayvalık','아이발륵','아이발릭','cunda','junda']
 };
 const CITY_DEFAULTS={
   '이스탄불':{breakfast:'07:00~10:00',alcohol:true},'앙카라':{breakfast:'07:00~09:30',alcohol:true},
   '부르사':{breakfast:'07:00~09:30',alcohol:false},'이즈미르':{breakfast:'07:00~10:00',alcohol:true},
   '파묵칼레':{breakfast:'07:30~09:30',alcohol:true},'카파도키아':{breakfast:'07:00~10:00',alcohol:true},
-  '콘야':{breakfast:'07:00~09:00',alcohol:false},'안탈리아':{breakfast:'07:00~10:00',alcohol:true}
+  '콘야':{breakfast:'07:00~09:00',alcohol:false},'안탈리아':{breakfast:'07:00~10:00',alcohol:true},
+  '아피온':{breakfast:'07:00~09:30',alcohol:false},
+  '쿠샤다스':{breakfast:'07:00~10:00',alcohol:true},'아이발륵':{breakfast:'07:00~09:30',alcohol:true}
 };
+const CITY_EN={'이스탄불':'Istanbul','앙카라':'Ankara','부르사':'Bursa','이즈미르':'Izmir','쿠샤다스':'Kusadasi','파묵칼레':'Pamukkale','카파도키아':'Cappadocia','콘야':'Konya','안탈리아':'Antalya','아피온':'Afyon','아이발륵':'Ayvalik'};
 const KEY='tour_hotel_notes_v3';
 const LIBKEY='tour_hotel_library_v1';
 
@@ -201,6 +209,35 @@ function saveLib(lib){try{localStorage.setItem(LIBKEY,JSON.stringify(lib));}catc
 function normKey(city,name){
   const n=(s)=>(s||'').toLowerCase().replace(/[\s\-_.,'"()]/g,'').replace(/hotel|호텔/g,'');
   return n(city)+'|'+n(name);
+}
+/* 과거 일정표에서 추출한 호텔명 시드 (최초 1회 주입, 학습 출발점) */
+const SEED_HOTELS={
+  '이스탄불':['PULLMAN','CROWNE PLAZA HARBIYE','SHERATON ATAKOY','CHIRAGAN PALACE KEMPINSKI','DELTA ISTANBUL WEST','WANDA VISTA','MARRIOTT PENDIK','SHERATON ISTANBUL ESENYURT'],
+  '앙카라':['NEWPARK ANKARA','GRAND ANKARA HOTEL'],
+  '카파도키아':['ORTAHISAR KAYA','ORTAHISAR CAVE','DOUBLETREE BY HILTON AVANOS','ALP','CRYSTAL KAYMAKLI','SUHAN','PERISSIA'],
+  '아피온':['NG AFYON'],
+  '콘야':['NOVOTEL KONYA','GRAND KONYA','RAMADA KONYA','BAYIR DIAMOND'],
+  '안탈리아':['HOLIDAY INN LARA','DOUBLETREE BY HILTON ANTALYA'],
+  '파묵칼레':['ADEM PIRA','LYCUS','RICHMOND','DOGA THERMAL','RENEX'],
+  '이즈미르':['KAYA IZMIR THERMAL'],
+  '쿠샤다스':['RAMADA SUIT'],
+  '부르사':['BAIA BURSA'],
+  '아이발륵':['GRAND TEMIZEL']
+};
+const SEED_FLAG='tour_hotel_seed_done_v3';
+function seedLibraryOnce(){
+  if(localStorage.getItem(SEED_FLAG))return;        // 이미 이 버전 주입했으면 건너뜀
+  const lib=loadLib();
+  // 이전 시드(사용자가 안 건드린 seeded 항목)는 제거하고 새 시드로 다시 깔기. 직접 입력/저장한 건 보존.
+  Object.keys(lib).forEach(k=>{const r=lib[k];if(r&&r.seeded&&(!r.savedAt||r.savedAt===0)&&!r.wifiSsid&&!r.wifiPw&&!r.breakfast)delete lib[k];});
+  Object.keys(SEED_HOTELS).forEach(city=>{
+    SEED_HOTELS[city].forEach(name=>{
+      const k=normKey(city,name);
+      if(!lib[k]){lib[k]={name:name,city:city,wifiSsid:'',wifiId:'',wifiPw:'',breakfast:'',dinner:'',structure:'',lobbyBtn:'',elevator:null,alcohol:null,seeded:true,savedAt:0};}
+    });
+  });
+  saveLib(lib);
+  localStorage.setItem(SEED_FLAG,'1');
 }
 /* 카드 정보를 사전에 저장(이름·도시 있을 때만) */
 function libStore(h){
@@ -225,6 +262,7 @@ let filterType='전체';
 /* 구버전 호환: wifiName → wifiSsid */
 (function migrate(){let ch=false;(state.hotels||[]).forEach(h=>{if(h.wifiName!==undefined){if(!h.wifiSsid)h.wifiSsid=h.wifiName;delete h.wifiName;ch=true;}if(h.wifiId===undefined)h.wifiId='';if(!Array.isArray(h.types)){h.types=[];ch=true;}});if(ch)localStorage.setItem(KEY,JSON.stringify(state));
 const lib=loadLib();let lc=false;Object.keys(lib).forEach(k=>{const r=lib[k];if(r.wifiName!==undefined){if(!r.wifiSsid)r.wifiSsid=r.wifiName;delete r.wifiName;lc=true;}});if(lc)saveLib(lib);})();
+seedLibraryOnce();
 
 function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{schedule:null,hotels:[]};}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state));flash();}catch(e){alert('저장 공간이 부족합니다. 사진 수를 줄여주세요.');}}
@@ -270,29 +308,62 @@ function openOcrModal(){modal().classList.add('show');document.getElementById('o
 function closeOcrModal(){modal().classList.remove('show');ocrCandidates=[];}
 
 /* OCR 결과 텍스트에서 호텔명 후보 뽑기 */
+/* 사전(학습)에 저장된 호텔명 목록 */
+function knownHotelNames(){
+  const lib=loadLib();const names=[];
+  Object.keys(lib).forEach(k=>{if(lib[k]&&lib[k].name)names.push(lib[k].name);});
+  return names;
+}
+/* 비교용 정규화 */
+function normName(s){return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+
+/* 알려진 호텔 브랜드 */
+const HOTEL_BRANDS=['PULLMAN','HILTON','HOLIDAY INN','GREEN PARK','RAMADA','RADISSON','SHERATON','MARRIOTT','NOVOTEL','MERCURE','IBIS','CROWNE PLAZA','WYNDHAM','DOUBLETREE','DEDEMAN','DIVAN','RIXOS','HYATT','HILTON GARDEN','CONRAD','SWISSOTEL','MOVENPICK','KAYA','LIMAK','TITANIC','ELITE WORLD','POINT','GRAND','PALACE','RESORT','SUITES'];
+
 function extractHotelCandidates(text){
-  const lines=text.split('\n').map(s=>s.trim()).filter(Boolean);
+  const rawLines=text.split('\n').map(s=>s.trim()).filter(Boolean);
+  const fullUpper=text.toUpperCase();
   const found=[];const seen=new Set();
-  // 흔한 호텔 브랜드/키워드
-  const brandRe=/(PULLMAN|HILTON|HOLIDAY\s*INN|GREEN\s*PARK|RAMADA|RADISSON|SHERATON|MARRIOTT|NOVOTEL|MERCURE|IBIS|CROWNE|WYNDHAM|DOUBLETREE|DEDEMAN|DIVAN|RIXOS|HYATT|GRAND|PALACE|RESORT|SPA|SUITES?|PIRA|DIAMOND|NUJELM|ADEM|BAYIR|MONTANA)/i;
-  const hotelWordRe=/\b([A-Z][A-Za-z]{2,}(?:\s+[A-Z][A-Za-z]{2,}){0,3})\b/g;
-  lines.forEach(line=>{
-    // 너무 긴 줄(설명문)·숫자만/날짜 줄은 건너뜀
-    if(line.length>40)return;
-    if(/^\d/.test(line)&&!/hotel/i.test(line))return;
+  const push=(name,score)=>{const key=normName(name);if(key.length<3||seen.has(key))return;seen.add(key);found.push({name:name.trim().replace(/\s+/g,' '),score});};
+
+  // 1순위: 학습된(사전에 저장된) 호텔명이 텍스트에 보이면 최우선
+  knownHotelNames().forEach(kn=>{
+    const nk=normName(kn);
+    if(nk.length>=3 && normName(text).includes(nk))push(kn,100);
+  });
+
+  // 2순위: 알려진 브랜드명
+  HOTEL_BRANDS.forEach(b=>{
+    const re=new RegExp(b.replace(/\s+/g,'\\s*'),'i');
+    if(re.test(text))push(b,80);
+  });
+
+  // 3순위: 줄 단위로 호텔명다운 토큰 추출 (노이즈 강력 필터)
+  const STOP=/^(HOTEL|LUNCH|DINNER|DATE|CODE|PAX|COACH|ROOM|TYPE|STEP|NOTICE|ITINERARY|RESTAURANT|SCHEDULE|DESTINATION|BOOKING|SHEET|AIRLINE|CAFE|REST|TUR|TOUR|KEBOB|KEBAB|PARK|CLOSED|OPEN|MON|TUE|WED|THU|FRI|SAT|SUN|EURO|PAM|KAPA|SAFARI|BALON|MUSEUM|MOZESI|SARAYI|PALACE|MOSQUE|BAZAR|BAZAAR|CRUISE|PALAS)$/;
+  const tokenRe=/\b([A-Z][A-Za-z]{2,}(?:\s+[A-Z][A-Za-z]{2,}){0,2})\b/g;
+  rawLines.forEach(line=>{
+    if(line.length>34)return;            // 설명문 제외
+    if(/[가-힣]/.test(line))return;       // 한글 섞인 줄 제외(메뉴·관광지)
+    if(/\d{2}[:.]\d{2}/.test(line))return;// 시간 줄 제외
     let m;
-    while((m=hotelWordRe.exec(line))!==null){
-      let cand=m[1].trim();
-      const up=cand.toUpperCase();
-      // 제외 단어
-      if(/^(HOTEL|LUNCH|DINNER|DATE|CODE|PAX|COACH|ROOM|TYPE|STEP|NOTICE|ITINERARY|RESTAURANT|SCHEDULE|DESTINATION|BOOKING|SHEET|AIRLINE|CAFE|REST|TUR|KEBOB|KEBOB|PARK)$/.test(up))continue;
-      if(cand.length<3)continue;
-      // 브랜드거나 2단어 이상 대문자 시작이면 후보로
-      const isBrand=brandRe.test(cand);
-      const isMultiCap=/^[A-Z][a-zA-Z]+(\s[A-Z][a-zA-Z]+)+$/.test(cand)||/^[A-Z]{3,}(\s[A-Z]{2,})*$/.test(cand);
-      if((isBrand||isMultiCap)&&!seen.has(up)){seen.add(up);found.push(cand);}
+    while((m=tokenRe.exec(line))!==null){
+      const cand=m[1].trim();const up=cand.toUpperCase();
+      const words=cand.split(/\s+/);
+      // 노이즈 필터: 한 단어인데 4글자 미만이면 제외(XIX, YEE, AHF 등 컷)
+      if(words.length===1 && cand.length<5)continue;
+      // 각 단어가 STOP 단어면 제외
+      if(words.some(w=>STOP.test(w.toUpperCase())))continue;
+      // 모음이 하나도 없는 자음 덩어리(SCT 등) 제외
+      if(!/[AEIOU]/i.test(cand))continue;
+      // 같은 글자 3연속 등 비정상 제외
+      if(/(.)\1\1/i.test(cand))continue;
+      let score=words.length>=2?60:35;   // 2단어 이상이면 호텔명일 확률↑
+      push(cand,score);
     }
   });
+
+  // 점수 높은 순 정렬
+  found.sort((a,b)=>b.score-a.score);
   return found;
 }
 
@@ -305,7 +376,7 @@ function startOcr(dataUrl){
     sub.textContent='OCR 모듈을 불러오지 못했어요 (인터넷 연결 확인)';
     showManualOnly();return;
   }
-  Tesseract.recognize(dataUrl,'eng',{logger:m=>{if(m.status==='recognizing text'){const p=document.getElementById('ocrProg');if(p)p.style.width=Math.round(m.progress*100)+'%';}}})
+  Tesseract.recognize(dataUrl,'eng',{logger:m=>{if(m.status==='recognizing text'){const p=document.getElementById('ocrProg');if(p)p.style.width=Math.round(m.progress*100)+'%';}},tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789'})
     .then(({data})=>{
       const cands=extractHotelCandidates(data.text||'');
       showCandidates(cands);
@@ -314,12 +385,14 @@ function startOcr(dataUrl){
 }
 
 function showCandidates(cands){
-  ocrCandidates=cands.map(nm=>({name:nm,city:guessCity(nm),sel:true}));
+  // 학습/브랜드(점수 high)는 기본 체크, 그 외 추정은 체크 해제 상태로
+  ocrCandidates=cands.map(c=>({name:c.name,city:guessCity(c.name),sel:c.score>=60}));
   const body=document.getElementById('ocrBody');const sub=document.getElementById('ocrSub');
+  const high=ocrCandidates.filter(c=>c.sel).length;
   if(ocrCandidates.length===0){
-    sub.textContent='호텔명을 자동으로 찾지 못했어요. 직접 입력해 주세요.';
+    sub.textContent='호텔명을 자동으로 찾지 못했어요. 아래에서 직접 입력해 주세요.';
   }else{
-    sub.textContent='찾은 호텔이에요. 맞는 것만 체크하세요 ('+ocrCandidates.length+'개)';
+    sub.textContent='호텔 후보예요. 체크된 항목이 신뢰도 높은 것 ('+high+'/'+ocrCandidates.length+'개) · 맞는 것만 남기세요';
   }
   renderCandidates();
   document.getElementById('ocrFoot').style.display='flex';
@@ -385,6 +458,7 @@ function cardEl(h,idx){
       '<div class="field" style="margin-bottom:0"><label>🛗 엘리베이터</label></div><div class="toggle-row" data-grp="elevator"><div class="tg '+(h.elevator===true?'active-yes':'')+'" data-val="yes"><span class="ti">✓</span>있음</div><div class="tg '+(h.elevator===false?'active-no':'')+'" data-val="no"><span class="ti">✗</span>없음</div></div>'+
       '<div class="field" style="margin-bottom:0"><label>🍷 주류 판매</label></div><div class="toggle-row" data-grp="alcohol"><div class="tg '+(h.alcohol===true?'active-yes':'')+'" data-val="yes"><span class="ti">✓</span>판매</div><div class="tg '+(h.alcohol===false?'active-no':'')+'" data-val="no"><span class="ti">✗</span>없음</div></div>'+
       '<div class="field"><label>📸 메뉴판 / 가격 / 기타 사진</label><div class="photos" data-photos>'+h.photos.map((p,pi)=>'<div class="photo"><img src="'+p+'"><button class="x" data-act="rmphoto" data-pi="'+pi+'">×</button></div>').join('')+'<div class="addphoto" data-act="addphoto">＋</div></div></div>'+
+      '<button class="mapbtn" data-act="openmap">🗺️ 구글 지도에서 위치 보기</button>'+
       '<div class="field"><label>📝 메모</label><textarea data-f="notes" placeholder="특이사항, 픽업 위치...">'+escapeHtml(h.notes)+'</textarea></div>'+
       '<button class="guestcopy" data-act="copyguest">📤 고객 안내문 복사 (카카오톡 붙여넣기)</button>'+
       '<div class="card-actions"><button class="save-btn" data-act="savecard">✓ 저장하고 닫기</button><button class="del-btn" data-act="delete">🗑 삭제</button></div>'+
@@ -467,6 +541,13 @@ document.getElementById('list').addEventListener('click',e=>{
   const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;
   const actEl=e.target.closest('[data-act]');const act=actEl?actEl.dataset.act:null;
   if(act==='copyguest'){copyGuest(h,actEl);return;}
+  if(act==='openmap'){
+    if(!h.name){toast('호텔명을 먼저 입력해 주세요');return;}
+    const cityEn=CITY_EN[h.city]||h.city||'';
+    const q=encodeURIComponent(h.name+' '+cityEn+' Turkey');
+    window.open('https://www.google.com/maps/search/?api=1&query='+q,'_blank');
+    return;
+  }
   if(act==='savecard'){libStore(h);save();h._open=false;render();toast('저장되었습니다 ✓ (호텔 사전에 기록)');return;}
   if(act==='toggle'){h._open=!h._open;card.classList.toggle('open');return;}
   if(act==='delete'){if(confirm('이 호텔을 삭제할까요?')){state.hotels=state.hotels.filter(x=>x.id!==h.id);save();render();}return;}
