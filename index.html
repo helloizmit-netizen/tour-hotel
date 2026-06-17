@@ -809,16 +809,36 @@ document.getElementById('restoreInput').onchange=function(e){
       if(!data||!data.notes||!Array.isArray(data.notes.hotels))throw new Error('형식 오류');
       const cur=state.hotels.length;const lib=loadLib();const libCur=Object.keys(lib).length;
       if(!confirm('복원하면 현재 데이터에 백업 내용이 합쳐집니다.\n\n현재 호텔 '+cur+'곳 / 사전 '+libCur+'곳\n백업 호텔 '+data.notes.hotels.length+'곳 / 사전 '+Object.keys(data.library||{}).length+'곳\n\n진행할까요?'))return;
-      // 호텔 목록: id 기준 중복 제거 후 병합
+      if(!Array.isArray(state.tours))state.tours=[];
+      // 백업에 투어 정보가 있으면 그대로 병합
+      const btours=Array.isArray(data.notes.tours)?data.notes.tours:[];
+      const existTourIds=new Set(state.tours.map(t=>t.id));
+      btours.forEach(t=>{if(!existTourIds.has(t.id)){state.tours.push(t);existTourIds.add(t.id);}});
+      // 복원될 호텔 중 tourId가 없거나 매칭되는 투어가 없는 것들을 모아 새 투어로 묶기
       const ids=new Set(state.hotels.map(h=>h.id));
-      data.notes.hotels.forEach(h=>{if(!ids.has(h.id))state.hotels.push(h);});
-      if(!state.schedule&&data.notes.schedule)state.schedule=data.notes.schedule;
+      const orphans=[];
+      const incoming=data.notes.hotels.filter(h=>!ids.has(h.id));
+      incoming.forEach(h=>{if(!h.tourId||!existTourIds.has(h.tourId))orphans.push(h);});
+      let restoreTourId=null;
+      if(orphans.length>0){
+        restoreTourId='t'+Date.now().toString(36);
+        const label=(data.exportedAt?String(data.exportedAt).slice(0,10):'')+' 복원';
+        state.tours.push({id:restoreTourId,name:'복원된 기록 ('+orphans.length+'곳)',createdAt:Date.now()});
+        existTourIds.add(restoreTourId);
+      }
+      incoming.forEach(h=>{
+        if(!h.tourId||!existTourIds.has(h.tourId)||orphans.indexOf(h)>=0)h.tourId=restoreTourId;
+        if(!Array.isArray(h.claims))h.claims=[];
+        state.hotels.push(h);
+      });
       // 사전 병합 (백업이 더 최신이면 갱신)
       const merged=loadLib();const bl=data.library||{};
       Object.keys(bl).forEach(k=>{if(!merged[k]||(bl[k].savedAt||0)>(merged[k].savedAt||0))merged[k]=bl[k];});
       saveLib(merged);
+      // 복원한 호텔은 지난 투어 탭에서 보여주기
+      if(restoreTourId){mainView='past';viewingPastTourId=restoreTourId;}
       save();render();
-      toast('복원 완료 ✓ 호텔·사전이 합쳐졌어요');
+      toast('복원 완료 ✓ '+incoming.length+'곳 · 지난 투어에서 확인하세요');
     }catch(err){alert('복원 실패: 올바른 백업 파일이 아니에요.');}
   };
   fr.readAsText(f);e.target.value='';
