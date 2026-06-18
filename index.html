@@ -101,6 +101,8 @@
   .hist-memo{font-size:13px;color:var(--text);margin-top:6px;line-height:1.5;}
   .endtour-btn{width:100%;margin:20px 0 10px;padding:14px;border-radius:12px;border:1px solid rgba(224,102,80,.4);background:rgba(224,102,80,.1);color:var(--red);font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:.15s;}
   .endtour-btn:active{transform:scale(.98);}
+  .deleteall-btn{width:100%;margin:10px 0 10px;padding:13px;border-radius:12px;border:1px solid rgba(224,102,80,.55);background:rgba(224,102,80,.18);color:#ff8a72;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;transition:.15s;}
+  .deleteall-btn:active{transform:scale(.98);}
   .addfloat{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);z-index:55;max-width:528px;width:calc(100% - 32px);}
   .addfloat button{width:100%;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:14px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;box-shadow:0 8px 24px rgba(0,0,0,.4);}
   /* 카드 내 분류 체크 */
@@ -332,7 +334,13 @@ function seedLibraryOnce(){
 function libStore(h){
   if(!h.name||!h.city)return;
   const lib=loadLib();
-  lib[normKey(h.city,h.name)]={name:h.name,city:h.city,address:h.address||'',wifiSsid:h.wifiSsid,wifiId:h.wifiId,wifiPw:h.wifiPw,breakfast:h.breakfast,dinner:h.dinner,structure:h.structure,lobbyBtn:h.lobbyBtn,elevator:h.elevator,alcohol:h.alcohol,savedAt:Date.now()};
+  const key=normKey(h.city,h.name);
+  const prev=lib[key]||{};
+  // 사진: 현재 호텔에 사진이 있으면 그걸 저장(최대 4장), 없으면 기존 사전 사진 유지
+  const photos=(h.photos&&h.photos.length)?h.photos.slice(0,4):(prev.photos||[]);
+  // 메모: 현재 입력값 우선, 없으면 기존 사전 메모 유지
+  const notes=(h.notes&&h.notes.trim())?h.notes:(prev.notes||'');
+  lib[key]={name:h.name,city:h.city,address:h.address||prev.address||'',wifiSsid:h.wifiSsid,wifiId:h.wifiId,wifiPw:h.wifiPw,breakfast:h.breakfast,dinner:h.dinner,structure:h.structure,lobbyBtn:h.lobbyBtn,elevator:h.elevator,alcohol:h.alcohol,notes:notes,photos:photos,savedAt:Date.now()};
   saveLib(lib);
 }
 /* 사전에서 조회 */
@@ -341,8 +349,10 @@ function libLookup(city,name){if(!city||!name)return null;const lib=loadLib();re
 function libFill(h){
   const rec=libLookup(h.city,h.name);if(!rec)return 0;
   let cnt=0;
-  ['wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn','address'].forEach(f=>{if(!h[f]&&rec[f]){h[f]=rec[f];cnt++;}});
+  ['wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn','address','notes'].forEach(f=>{if(!h[f]&&rec[f]){h[f]=rec[f];cnt++;}});
   ['elevator','alcohol'].forEach(f=>{if(h[f]===null&&rec[f]!==null&&rec[f]!==undefined){h[f]=rec[f];cnt++;}});
+  // 사진: 현재 호텔에 사진이 없고 사전에 있으면 불러오기
+  if((!h.photos||h.photos.length===0)&&rec.photos&&rec.photos.length){h.photos=rec.photos.slice();cnt++;}
   return cnt;
 }
 let state=load();let activePhotoHotel=null;let filterCity='전체';let sortMode='order';
@@ -624,9 +634,10 @@ function renderCurrent(){
     list.innerHTML='<div class="empty"><div class="ic">🛏️</div><p>'+msg+'</p></div>';return;
   }
   vis.forEach(x=>list.appendChild(cardEl(x.h,x.i)));
-  // 투어 종료 버튼 (현재 투어에 호텔이 있을 때)
+  // 투어 종료 / 전부 삭제 버튼 (현재 투어에 호텔이 있을 때)
   if(state.currentTourId && currentHotels().length>0 && !hotelSearch.trim()){
-    endWrap.innerHTML='<button class="endtour-btn" id="btnEndTour">🏁 투어 종료 (지난 투어로 보내기)</button>';
+    endWrap.innerHTML='<button class="endtour-btn" id="btnEndTour">🏁 투어 종료 (지난 투어로 보내기)</button>'+
+      '<button class="deleteall-btn" id="btnDeleteAll">🗑 현재 호텔 전부 삭제</button>';
   }
 }
 
@@ -857,6 +868,14 @@ document.getElementById('endTourWrap').addEventListener('click',e=>{
     save();render();
     toast('투어를 종료했어요 🏁 지난 투어에서 볼 수 있어요');
   }
+  if(e.target.id==='btnDeleteAll'){
+    const cnt=currentHotels().length;
+    if(!confirm('현재 투어의 호텔 '+cnt+'곳을 전부 삭제할까요?\n\n⚠️ 카드의 사진·메모도 함께 삭제됩니다.\n이 작업은 되돌릴 수 없어요.\n(호텔 사전에 저장된 정보는 유지됩니다)'))return;
+    state.hotels=state.hotels.filter(h=>h.tourId!==state.currentTourId);
+    state.schedule=null;hotelSearch='';filterCity='전체';
+    save();render();
+    toast('현재 호텔 '+cnt+'곳을 삭제했어요');
+  }
 });
 document.getElementById('tourTitleBar').addEventListener('input',e=>{if(e.target.id==='tourNameInput'){const t=state.tours.find(x=>x.id===state.currentTourId);if(t){t.name=e.target.value;clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(state));flash();},500);}}});
 document.getElementById('viewPast').addEventListener('click',e=>{
@@ -905,7 +924,7 @@ document.getElementById('schedInput').onchange=function(e){const f=e.target.file
   }
   state.schedule=d;mainView='current';filterCity='전체';hotelSearch='';save();render();setTimeout(startOcrFromSchedule,150);
 });e.target.value='';};
-document.getElementById('photoInput').onchange=function(e){const files=[...e.target.files];if(!files.length||!activePhotoHotel)return;const h=state.hotels.find(x=>x.id===activePhotoHotel);if(!h)return;let done=0;files.forEach(f=>resizeImage(f,900,d=>{h.photos.push(d);done++;if(done===files.length){save();render();reopenAndScroll(h.id);}}));e.target.value='';};
+document.getElementById('photoInput').onchange=function(e){const files=[...e.target.files];if(!files.length||!activePhotoHotel)return;const h=state.hotels.find(x=>x.id===activePhotoHotel);if(!h)return;let done=0;files.forEach(f=>resizeImage(f,900,d=>{h.photos.push(d);done++;if(done===files.length){libStore(h);save();render();reopenAndScroll(h.id);}}));e.target.value='';};
 
 document.getElementById('list').addEventListener('click',e=>{
   const card=e.target.closest('.card');if(!card)return;
@@ -925,7 +944,7 @@ document.getElementById('list').addEventListener('click',e=>{
   if(act==='toggle'){h._open=!h._open;card.classList.toggle('open');return;}
   if(act==='delete'){if(confirm('이 호텔을 삭제할까요?')){state.hotels=state.hotels.filter(x=>x.id!==h.id);save();render();}return;}
   if(act==='addphoto'){activePhotoHotel=h.id;document.getElementById('photoInput').click();return;}
-  if(act==='rmphoto'){h.photos.splice(+e.target.dataset.pi,1);save();render();reopenAndScroll(h.id);return;}
+  if(act==='rmphoto'){h.photos.splice(+e.target.dataset.pi,1);libStore(h);save();render();reopenAndScroll(h.id);return;}
   if(act==='claimadd'){if(!Array.isArray(h.claims))h.claims=[];h.claims.push({room:'',type:'',memo:''});save();render();reopenAndScroll(h.id);return;}
   if(act==='claimdel'){const ci=+e.target.closest('[data-ci]').dataset.ci;h.claims.splice(ci,1);save();render();reopenAndScroll(h.id);return;}
   const tp=e.target.closest('.tp');
@@ -945,7 +964,7 @@ document.getElementById('list').addEventListener('input',e=>{
     else if(cf==='memo')h.claims[ci].memo=e.target.value;
     else if(cf==='customtype')h.claims[ci].type=e.target.value;
     clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(state));flash();},500);return;}
-  const f=e.target.dataset.f;if(!f||f==='city')return;const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;h[f]=e.target.value;if(f==='name')card.querySelector('.hname').textContent=h.name||'(호텔명 미입력)';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(state));flash();},500);
+  const f=e.target.dataset.f;if(!f||f==='city')return;const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;h[f]=e.target.value;if(f==='name')card.querySelector('.hname').textContent=h.name||'(호텔명 미입력)';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{libStore(h);localStorage.setItem(KEY,JSON.stringify(state));flash();},600);
 });
 function reopenAndScroll(id){const h=state.hotels.find(x=>x.id===id);if(h)h._open=true;render();setTimeout(()=>{const el=document.querySelector('[data-id="'+id+'"]');if(el)el.scrollIntoView({block:'center'});},50);}
 function resizeImage(file,maxW,cb){const img=new Image();const fr=new FileReader();fr.onload=()=>{img.onload=()=>{let w=img.width,hh=img.height;if(w>maxW){hh=hh*maxW/w;w=maxW;}const cv=document.createElement('canvas');cv.width=w;cv.height=hh;cv.getContext('2d').drawImage(img,0,0,w,hh);cb(cv.toDataURL('image/jpeg',0.72));};img.src=fr.result;};fr.readAsDataURL(file);}
