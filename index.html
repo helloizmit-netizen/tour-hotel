@@ -2,82 +2,93 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>투어 호텔 노트</title>
 <style>
-  :root{--bg:#0e1419;--surface:#161f29;--surface2:#1e2a36;--line:#2a3744;--text:#e8eef3;--muted:#8a9aab;--accent:#e8a33d;--accent2:#3da6e8;--green:#4fc08d;--red:#e06650;--radius:16px;}
+  :root{
+    --bg:#0a0e12;--surface:#121a21;--surface2:#0e151b;--line:#26323d;
+    --text:#e8eef3;--muted:#8499a8;--accent:#e8a33d;--accent2:#3da6e8;
+    --green:#46c98a;--red:#e06650;
+  }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;}
-  body{font-family:'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;background:radial-gradient(900px 500px at 90% -10%, rgba(232,163,61,.10), transparent 60%),radial-gradient(700px 500px at -10% 110%, rgba(61,166,232,.08), transparent 55%),var(--bg);color:var(--text);min-height:100vh;padding-bottom:140px;}
+  body{font-family:'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;background:radial-gradient(900px 500px at 90% -10%, rgba(232,163,61,.10), transparent 60%),radial-gradient(700px 500px at -10% 110%, rgba(61,166,232,.08), transparent 55%),var(--bg);color:var(--text);min-height:100vh;padding-bottom:96px;margin:0;}
   .wrap{max-width:560px;margin:0 auto;padding:0 16px;}
-  header{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(14,20,25,.82);border-bottom:1px solid var(--line);}
-  .head-in{max-width:560px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
-  .brand{display:flex;align-items:center;gap:10px;}
-  .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#c97f1a);display:grid;place-items:center;font-size:18px;box-shadow:0 4px 14px rgba(232,163,61,.35);}
-  .brand h1{font-size:17px;margin:0;letter-spacing:.3px;}
-  .brand span{font-size:11px;color:var(--muted);display:block;margin-top:1px;}
-  .count-pill{font-size:12px;color:var(--accent);background:rgba(232,163,61,.12);border:1px solid rgba(232,163,61,.3);padding:5px 11px;border-radius:999px;font-weight:600;}
-  .upload{margin:18px 0 8px;border:1.5px dashed var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--surface),rgba(22,31,41,.4));padding:22px 18px;text-align:center;}
-  .upload .ic{font-size:30px;}
-  .upload .t{font-weight:600;margin-top:6px;}
-  .upload .s{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
-  .btn-row{display:flex;gap:10px;margin-top:14px;}
-  .btn{flex:1;border:none;cursor:pointer;font-family:inherit;font-weight:600;padding:12px;border-radius:12px;font-size:14px;transition:.15s;}
-  .btn:active{transform:scale(.97);}
-  .btn-pri{background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;}
-  .btn-sec{background:var(--surface2);color:var(--text);border:1px solid var(--line);}
-  .sched-thumb{margin-top:12px;position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
-  .sched-thumb img{width:100%;display:block;}
-  .sched-thumb .rm{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;}
-  .toolbar{display:flex;align-items:center;gap:8px;margin:22px 4px 12px;flex-wrap:wrap;}
-  .toolbar .lbl{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-right:auto;}
-  .backupbar{display:flex;gap:8px;margin:12px 0 0;}
-  .backupbar button{flex:1;background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:10px;padding:9px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;transition:.15s;}
-  .backupbar button:active{transform:scale(.97);}
-  .backupbar button b{color:var(--accent2);}
-  .typetabs{display:flex;gap:6px;margin:18px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;}
-  .typetabs button{flex:1;border:none;background:transparent;color:var(--muted);font-family:inherit;font-size:13.5px;font-weight:700;padding:10px;border-radius:9px;cursor:pointer;transition:.15s;}
-  .typetabs button.active{background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;}
-  .typetabs button .n{font-size:10px;opacity:.7;margin-left:3px;}
-  .pasttoursel{width:100%;margin-top:10px;background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:11px;padding:11px 12px;font-family:inherit;font-size:14px;font-weight:600;}
-  /* 하단 탭바 */
-  .bottomtabs{position:fixed;bottom:0;left:0;right:0;z-index:60;display:flex;background:rgba(14,20,25,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line);max-width:560px;margin:0 auto;}
-  .bottomtabs button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;color:var(--muted);padding:9px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.15s;}
-  .bottomtabs button .bi{font-size:20px;}
-  .bottomtabs button.active{color:var(--accent);}
-  /* 검색창 */
-  .searchbox{width:100%;margin:16px 0 0;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--text);font-family:inherit;font-size:14px;padding:12px 14px;outline:none;}
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(10,14,18,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:14px 0 12px;margin-bottom:4px;}
+  .topbar .row{display:flex;align-items:center;gap:12px;}
+  .logo{width:44px;height:44px;border-radius:12px;background:radial-gradient(circle at 30% 30%,#1c2630,#0c1217);display:grid;place-items:center;font-size:22px;box-shadow:0 0 0 1px var(--line),0 6px 18px rgba(232,163,61,.18);}
+  .ttl{flex:1;}
+  .ttl h1{margin:0;font-size:18px;font-weight:800;letter-spacing:-.3px;}
+  .ttl p{margin:2px 0 0;font-size:11.5px;color:var(--muted);}
+  .pill{background:rgba(232,163,61,.12);border:1px solid rgba(232,163,61,.3);color:var(--accent);font-size:12px;font-weight:700;padding:6px 12px;border-radius:99px;}
+  .section-title{font-size:13px;color:var(--muted);font-weight:700;margin:18px 0 10px;}
+  .searchbox{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;padding:13px 15px;outline:none;}
   .searchbox:focus{border-color:var(--accent2);}
-  /* 투어명 헤더 */
-  .tourtitle{display:flex;align-items:center;gap:8px;margin:18px 0 0;padding:12px 14px;background:linear-gradient(135deg,rgba(232,163,61,.12),rgba(61,166,232,.06));border:1px solid var(--line);border-radius:12px;}
-  .tourtitle .tt-ic{font-size:18px;}
-  .tourtitle input{flex:1;background:none;border:none;color:var(--text);font-family:inherit;font-size:15px;font-weight:700;outline:none;}
-  .tourtitle .tt-edit{font-size:11px;color:var(--accent2);}
-  /* 지난 투어 목록 */
-  .tourlist-item{display:flex;align-items:center;gap:12px;padding:16px;background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:14px;margin-bottom:12px;cursor:pointer;transition:.15s;}
-  .tourlist-item:active{transform:scale(.99);}
-  .tourlist-item .tl-ic{width:42px;height:42px;border-radius:11px;background:rgba(232,163,61,.14);display:grid;place-items:center;font-size:20px;flex-shrink:0;}
-  .tourlist-item .tl-meta{flex:1;min-width:0;}
-  .tourlist-item .tl-name{font-size:15px;font-weight:700;}
-  .tourlist-item .tl-sub{font-size:12px;color:var(--muted);margin-top:2px;}
-  .tourlist-item .tl-chev{color:var(--muted);}
-  /* 지난 투어 상세 (호텔 리스트만) */
-  .backlink{display:inline-flex;align-items:center;gap:6px;color:var(--accent2);font-size:13px;font-weight:600;cursor:pointer;margin:16px 0 4px;background:none;border:none;font-family:inherit;}
-  .simple-hotel{display:flex;align-items:center;gap:10px;padding:13px 14px;background:var(--surface);border:1px solid var(--line);border-radius:11px;margin-bottom:8px;}
-  .simple-hotel .sh-day{font-size:11px;color:var(--accent2);font-weight:700;min-width:42px;}
-  .simple-hotel .sh-name{font-size:14px;font-weight:600;flex:1;}
-  .simple-hotel .sh-city{font-size:10.5px;color:var(--accent);}
+  .citychips{display:flex;gap:7px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none;}
+  .citychips::-webkit-scrollbar{display:none;}
+  .chip{flex-shrink:0;background:var(--surface);border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:99px;cursor:pointer;transition:.15s;}
+  .chip.active{background:rgba(61,166,232,.15);border-color:var(--accent2);color:var(--accent2);}
+  .chip .n{font-size:10px;opacity:.7;margin-left:4px;}
+  /* 호텔 목록 항목 */
+  .hotel-item{display:flex;align-items:center;gap:12px;padding:15px;background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:14px;margin-bottom:11px;cursor:pointer;transition:.15s;}
+  .hotel-item:active{transform:scale(.99);}
+  .hotel-item .hi-ic{width:46px;height:46px;border-radius:12px;background:rgba(232,163,61,.13);display:grid;place-items:center;font-size:22px;flex-shrink:0;}
+  .hotel-item .hi-meta{flex:1;min-width:0;}
+  .hotel-item .hi-name{font-size:15.5px;font-weight:700;line-height:1.3;}
+  .hotel-item .hi-sub{font-size:12px;color:var(--muted);margin-top:3px;}
+  .hotel-item .hi-city{color:var(--accent);}
+  .hotel-item .hi-badge{background:rgba(224,102,80,.15);color:var(--red);font-size:12px;font-weight:800;min-width:26px;height:26px;border-radius:8px;display:grid;place-items:center;padding:0 6px;flex-shrink:0;}
+  .hotel-item .hi-chev{color:var(--muted);font-size:18px;}
+  .empty{text-align:center;color:var(--muted);padding:50px 20px;}
+  .empty .ic{font-size:40px;margin-bottom:12px;opacity:.5;}
+  .empty p{font-size:13.5px;line-height:1.6;margin:0;}
+  .addbtn{width:100%;padding:14px;border-radius:13px;border:1px dashed rgba(61,166,232,.4);background:rgba(61,166,232,.07);color:var(--accent2);font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;margin:6px 0 14px;}
+  /* 상세 */
+  .backlink{display:inline-flex;align-items:center;gap:6px;color:var(--accent2);font-size:13.5px;font-weight:600;cursor:pointer;margin:16px 0 6px;background:none;border:none;font-family:inherit;padding:4px 0;}
+  .detail-head{display:flex;align-items:flex-start;gap:12px;padding:16px;background:linear-gradient(135deg,rgba(232,163,61,.1),rgba(61,166,232,.05));border:1px solid var(--line);border-radius:14px;margin-bottom:6px;}
+  .detail-head .dh-ic{font-size:26px;}
+  .detail-head .dh-name{font-size:18px;font-weight:800;flex:1;background:none;border:none;color:var(--text);font-family:inherit;width:100%;outline:none;padding:0;}
+  .detail-head .dh-name:focus{border-bottom:1px solid var(--accent2);}
+  .summary-row{display:flex;gap:10px;margin:12px 0;}
+  .summary-box{flex:1;text-align:center;background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:13px;padding:14px 8px;}
+  .summary-box .num{font-size:23px;font-weight:800;}
+  .summary-box .lab{font-size:11px;color:var(--muted);margin-top:3px;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:11.5px;color:var(--muted);font-weight:700;margin-bottom:6px;}
+  .field input,.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:11px 13px;outline:none;}
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent2);}
+  .field textarea{resize:vertical;min-height:46px;line-height:1.5;}
+  .two{display:flex;gap:10px;}
+  .two .field{flex:1;}
+  .card-block{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:14px;}
+  .card-block > h3{margin:0 0 13px;font-size:14px;display:flex;align-items:center;justify-content:space-between;}
+  .toggle-row{display:flex;gap:8px;}
+  .tg{flex:1;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;}
+  .tg.on{background:rgba(70,201,138,.14);border-color:var(--green);color:var(--green);}
+  .tg.off{background:rgba(224,102,80,.12);border-color:var(--red);color:var(--red);}
+  /* 사진 */
+  .photos{display:flex;gap:8px;flex-wrap:wrap;}
+  .photo{position:relative;width:72px;height:72px;border-radius:10px;overflow:hidden;border:1px solid var(--line);}
+  .photo img{width:100%;height:100%;object-fit:cover;}
+  .photo .rm{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;border:none;background:rgba(0,0,0,.6);color:#fff;font-size:13px;cursor:pointer;display:grid;place-items:center;}
+  .addphoto{width:72px;height:72px;border-radius:10px;border:1px dashed var(--line);background:var(--surface);color:var(--muted);font-size:24px;cursor:pointer;display:grid;place-items:center;}
+  .mapbtn{width:100%;padding:12px;border-radius:11px;border:1px solid rgba(61,166,232,.45);background:rgba(61,166,232,.12);color:var(--accent2);font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;margin-top:4px;}
+  /* 방문 기록 */
+  .visit-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin-bottom:8px;}
+  .visit-item .vi-date{flex:1;font-size:14px;font-weight:600;}
+  .visit-item .vi-claims{font-size:11.5px;color:var(--accent);}
+  .visit-item .vi-del{background:none;border:none;color:var(--red);font-size:15px;cursor:pointer;}
+  .visit-add-row{display:flex;gap:8px;margin-top:4px;}
+  .visit-add-row input{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:11px;outline:none;}
+  .visit-add-row button{padding:0 18px;border-radius:10px;border:none;background:var(--accent2);color:#04141f;font-family:inherit;font-weight:700;font-size:13px;cursor:pointer;}
   /* 클레임 */
-  .claim-sec{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px;}
-  .claim-sec .ttl{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
-  .claim-item{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px;}
+  .claim-item{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:8px;}
   .claim-row{display:flex;gap:8px;}
-  .claim-row input,.claim-row select{background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;padding:8px 10px;outline:none;}
-  .claim-room{width:90px;}
-  .claim-type{flex:1;}
-  .claim-memo{width:100%;margin-top:8px;background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;padding:8px 10px;outline:none;resize:vertical;min-height:38px;}
-  .claim-del{background:none;border:none;color:var(--red);font-size:16px;cursor:pointer;padding:0 4px;}
-  .claim-add{width:100%;padding:10px;border-radius:10px;border:1px dashed rgba(61,166,232,.4);background:rgba(61,166,232,.08);color:var(--accent2);font-family:inherit;font-weight:600;font-size:12.5px;cursor:pointer;margin-top:2px;}
+  .claim-row input,.claim-row select{background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;padding:8px 10px;outline:none;}
+  .claim-room{width:84px;}.claim-type{flex:1;}
+  .claim-del{background:none;border:none;color:var(--red);font-size:15px;cursor:pointer;padding:0 4px;}
+  .claim-memo{width:100%;margin-top:8px;background:var(--bg);border:1px solid var(--line);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;padding:8px 10px;outline:none;resize:vertical;min-height:36px;}
+  .claim-add{width:100%;padding:9px;border-radius:9px;border:1px dashed rgba(61,166,232,.4);background:rgba(61,166,232,.07);color:var(--accent2);font-family:inherit;font-weight:600;font-size:12px;cursor:pointer;}
+  .claim-date{font-size:11px;color:var(--muted);font-weight:700;margin:14px 0 7px;}
   /* 통계 */
   .stat-card{background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
   .stat-card h3{margin:0 0 12px;font-size:14px;}
@@ -86,218 +97,88 @@
   .stat-bar .lab b{color:var(--accent);}
   .stat-bar .track{height:8px;background:var(--bg);border-radius:99px;overflow:hidden;}
   .stat-bar .fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;}
-  .stat-empty{text-align:center;color:var(--muted);font-size:13px;padding:30px;}
-  .hotelstat-item{display:flex;align-items:center;gap:10px;padding:14px;background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:.15s;}
-  .hotelstat-item:active{transform:scale(.99);}
-  .hotelstat-item .hs-meta{flex:1;min-width:0;}
-  .hotelstat-item .hs-name{font-size:14.5px;font-weight:700;}
-  .hotelstat-item .hs-sub{font-size:11.5px;color:var(--muted);margin-top:2px;}
-  .hotelstat-item .hs-badge{background:rgba(224,102,80,.15);color:var(--red);font-size:12px;font-weight:800;min-width:26px;height:26px;border-radius:8px;display:grid;place-items:center;padding:0 6px;}
   .hist-item{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:8px;}
   .hist-top{display:flex;align-items:center;gap:8px;}
   .hist-type{font-size:12px;font-weight:700;color:var(--accent);background:rgba(232,163,61,.12);padding:3px 9px;border-radius:6px;}
   .hist-room{font-size:11.5px;color:var(--accent2);font-weight:600;}
-  .hist-tour{font-size:11px;color:var(--muted);margin-top:5px;}
-  .hist-memo{font-size:13px;color:var(--text);margin-top:6px;line-height:1.5;}
-  .endtour-btn{width:100%;margin:20px 0 10px;padding:14px;border-radius:12px;border:1px solid rgba(224,102,80,.4);background:rgba(224,102,80,.1);color:var(--red);font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;transition:.15s;}
-  .endtour-btn:active{transform:scale(.98);}
-  .deleteall-btn{width:100%;margin:10px 0 10px;padding:13px;border-radius:12px;border:1px solid rgba(224,102,80,.55);background:rgba(224,102,80,.18);color:#ff8a72;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;transition:.15s;}
-  .deleteall-btn:active{transform:scale(.98);}
-  .addfloat{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);z-index:55;max-width:528px;width:calc(100% - 32px);}
-  .addfloat button{width:100%;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:14px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;box-shadow:0 8px 24px rgba(0,0,0,.4);}
-  /* 카드 내 분류 체크 */
-  .typepick{display:flex;gap:8px;margin-top:14px;}
-  .typepick .tp{flex:1;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s;user-select:none;}
-  .typepick .tp.on{border-color:var(--accent);background:rgba(232,163,61,.14);color:var(--accent);}
-  .citychips{display:flex;gap:7px;overflow-x:auto;padding:4px 16px 8px;margin:0 -16px;-webkit-overflow-scrolling:touch;}
-  .citychips::-webkit-scrollbar{display:none;}
-  .chip{flex-shrink:0;font-size:13px;padding:7px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap;transition:.15s;}
-  .chip.active{background:rgba(61,166,232,.15);border-color:var(--accent2);color:var(--accent2);font-weight:600;}
-  .chip .n{font-size:10px;opacity:.7;margin-left:3px;}
-  select.sortsel{background:var(--surface);color:var(--text);border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-family:inherit;font-size:12.5px;}
-  .card{background:linear-gradient(180deg,var(--surface),var(--surface2));border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.25);}
-  .card-head{padding:15px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;}
-  .daybadge{flex-shrink:0;width:46px;height:46px;border-radius:12px;background:rgba(61,166,232,.14);border:1px solid rgba(61,166,232,.3);display:grid;place-items:center;text-align:center;line-height:1.05;}
-  .daybadge b{font-size:17px;color:var(--accent2);}
-  .daybadge small{font-size:9px;color:var(--muted);}
-  .card-head .meta{flex:1;min-width:0;}
-  .card-head .hname{font-size:16px;font-weight:700;margin:0;}
-  .card-head .hsub{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
-  .citytag{font-size:10.5px;padding:2px 8px;border-radius:6px;background:rgba(232,163,61,.12);border:1px solid rgba(232,163,61,.3);color:var(--accent);}
-  .chev{color:var(--muted);font-size:13px;transition:.2s;margin-top:4px;}
-  .card.open .chev{transform:rotate(90deg);}
-  .quickdel{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 6px;margin-top:2px;opacity:.55;transition:.15s;}
-  .quickdel:active{opacity:1;transform:scale(.9);}
-  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
-  .tag{font-size:10.5px;padding:3px 8px;border-radius:6px;background:var(--surface);border:1px solid var(--line);color:var(--muted);}
-  .tag.on{color:var(--green);border-color:rgba(79,192,141,.4);background:rgba(79,192,141,.1);}
-  .tag.off{color:var(--red);border-color:rgba(224,102,80,.35);background:rgba(224,102,80,.08);}
-  .card-body{display:none;border-top:1px solid var(--line);padding:4px 16px 16px;}
-  .card.open .card-body{display:block;}
-  .field{margin-top:14px;}
-  .field label{font-size:11.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:5px;}
-  .field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 12px;outline:none;transition:.15s;}
-  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent2);}
-  .field textarea{resize:vertical;min-height:54px;}
-  .two{display:flex;gap:10px;}
-  .two .field{flex:1;}
-  .toggle-row{display:flex;gap:8px;margin-top:14px;}
-  .tg{flex:1;text-align:center;padding:11px 6px;border-radius:10px;border:1px solid var(--line);background:var(--bg);cursor:pointer;font-size:12.5px;color:var(--muted);transition:.15s;user-select:none;}
-  .tg .ti{font-size:17px;display:block;margin-bottom:3px;}
-  .tg.active-yes{border-color:rgba(79,192,141,.5);background:rgba(79,192,141,.12);color:var(--green);}
-  .tg.active-no{border-color:rgba(224,102,80,.45);background:rgba(224,102,80,.1);color:var(--red);}
-  .photos{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-  .photo{position:relative;width:74px;height:74px;border-radius:10px;overflow:hidden;border:1px solid var(--line);}
-  .photo img{width:100%;height:100%;object-fit:cover;}
-  .photo .x{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:12px;line-height:1;cursor:pointer;}
-  .addphoto{width:74px;height:74px;border-radius:10px;border:1.5px dashed var(--line);background:var(--bg);display:grid;place-items:center;cursor:pointer;color:var(--muted);font-size:22px;}
-  .guestcopy{margin-top:18px;width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;font-family:inherit;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(232,163,61,.3);transition:.15s;}
-  .guestcopy:active{transform:scale(.98);}
-  .guestcopy.done{background:linear-gradient(135deg,var(--green),#37a877);color:#06281a;}
-  .mapbtn{margin-top:16px;width:100%;padding:12px;border-radius:11px;border:1px solid rgba(61,166,232,.45);background:rgba(61,166,232,.12);color:var(--accent2);font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;transition:.15s;}
-  .mapbtn:active{transform:scale(.98);}
-  .card-actions{display:flex;gap:8px;margin-top:12px;}
-  .save-btn{flex:2;background:rgba(79,192,141,.14);color:var(--green);border:1px solid rgba(79,192,141,.45);border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;}
-  .save-btn:active{transform:scale(.98);}
-  .del-btn{background:rgba(224,102,80,.1);color:var(--red);border:1px solid rgba(224,102,80,.3);border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;flex:1;}
-  .empty{text-align:center;padding:46px 20px;color:var(--muted);}
-  .empty .ic{font-size:44px;opacity:.5;}
-  .empty p{font-size:13.5px;line-height:1.6;margin-top:10px;}
-  .fab{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:40;max-width:528px;width:calc(100% - 32px);display:flex;gap:10px;}
-  .fab button{flex:1;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:15px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.4);}
-  .fab .add{background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;}
-  .saved-flash{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--green);color:#06281a;padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;transition:.3s;z-index:50;pointer-events:none;max-width:90%;text-align:center;}
-  .saved-flash.show{opacity:1;}
-  /* OCR 진행/선택 모달 */
-  .modal-bg{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);display:none;align-items:flex-end;}
-  .modal-bg.show{display:flex;}
-  .modal{background:var(--surface);border-top-left-radius:20px;border-top-right-radius:20px;width:100%;max-width:560px;margin:0 auto;max-height:85vh;display:flex;flex-direction:column;border:1px solid var(--line);}
-  .modal-head{padding:18px 18px 12px;border-bottom:1px solid var(--line);}
-  .modal-head h3{margin:0;font-size:16px;}
-  .modal-head p{margin:4px 0 0;font-size:12px;color:var(--muted);}
-  .modal-body{padding:14px 18px;overflow-y:auto;flex:1;}
-  .ocr-status{text-align:center;padding:30px 10px;color:var(--muted);font-size:13.5px;}
-  .ocr-bar{height:6px;background:var(--bg);border-radius:99px;overflow:hidden;margin:14px auto 0;max-width:240px;}
-  .ocr-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:.3s;}
-  .cand{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--bg);cursor:pointer;}
-  .cand.sel{border-color:var(--accent2);background:rgba(61,166,232,.1);}
-  .cand .ck{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);flex-shrink:0;display:grid;place-items:center;font-size:13px;color:#06281a;}
-  .cand.sel .ck{background:var(--accent2);border-color:var(--accent2);}
-  .cand .nm{flex:1;font-size:14px;}
-  .cand .cty{font-size:10.5px;color:var(--accent);}
-  .modal-foot{padding:12px 18px 20px;border-top:1px solid var(--line);display:flex;gap:10px;}
-  .modal-foot button{flex:1;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;padding:13px;border-radius:12px;}
-  .mf-add{background:linear-gradient(135deg,var(--accent),#cf8a23);color:#1a1206;}
-  .mf-cancel{background:var(--surface2);color:var(--muted);border:1px solid var(--line);}
-  .manual-add{margin-top:10px;display:flex;gap:8px;}
-  .manual-add input{flex:1;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;padding:10px 12px;}
-  .manual-add button{background:var(--surface2);border:1px solid var(--line);color:var(--accent2);border-radius:10px;padding:0 14px;font-family:inherit;font-weight:600;cursor:pointer;}
+  .hist-meta{font-size:11px;color:var(--muted);margin-top:5px;}
+  .hist-memo{font-size:13px;margin-top:6px;line-height:1.5;}
+  .stat-empty{text-align:center;color:var(--muted);font-size:13px;padding:30px;}
+  .backupbar{display:flex;gap:10px;margin:6px 0 14px;}
+  .backupbar button{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:11px;color:var(--text);font-family:inherit;font-size:13px;padding:13px;cursor:pointer;}
+  .delbtn{width:100%;margin-top:6px;padding:13px;border-radius:12px;border:1px solid rgba(224,102,80,.5);background:rgba(224,102,80,.14);color:#ff8a72;font-family:inherit;font-weight:700;font-size:13.5px;cursor:pointer;}
+  /* 하단 탭 */
+  .bottomtabs{position:fixed;bottom:0;left:0;right:0;z-index:60;display:flex;background:rgba(14,20,25,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line);max-width:560px;margin:0 auto;}
+  .bottomtabs button{flex:1;background:none;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:600;color:var(--muted);padding:9px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .bottomtabs button .bi{font-size:21px;}
+  .bottomtabs button.active{color:var(--accent);}
+  .flash{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--green);color:#03210f;font-size:13px;font-weight:700;padding:9px 18px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none;z-index:80;white-space:nowrap;}
+  .flash.show{opacity:1;}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
-<header>
-  <div class="head-in">
-    <div class="brand"><div class="logo">🏨</div><div><h1>투어 호텔 노트</h1><span>Emre 가이드 전용 · 자동 저장</span></div></div>
-    <div class="count-pill" id="countPill">0곳</div>
+<div class="topbar">
+  <div class="wrap">
+    <div class="row">
+      <div class="logo">🏨</div>
+      <div class="ttl"><h1>투어 호텔 노트</h1><p>Emre 가이드 전용 · 호텔 데이터베이스</p></div>
+      <div class="pill" id="countPill">0곳</div>
+    </div>
   </div>
-</header>
+</div>
+
 <div class="wrap">
-  <!-- 신규 투어 뷰 -->
-  <div id="viewNew" style="display:none">
-    <div class="section-title" style="margin-top:18px">새 투어 시작</div>
-    <div class="upload" id="uploadZone">
-      <div class="ic">📋</div>
-      <div class="t">일정표 사진 올리기</div>
-      <div class="s">사진을 올리면 호텔 이름을 자동으로 읽어 카드를 만들어요.<br>인식이 안 되면 직접 추가할 수 있어요.</div>
-      <div class="btn-row">
-        <button class="btn btn-pri" id="btnSchedule">📷 일정표 첨부</button>
-        <button class="btn btn-sec" id="btnManual">+ 빈 투어 시작</button>
-      </div>
-      <div id="schedThumbWrap"></div>
-    </div>
-    <div class="section-title" style="margin-top:22px">데이터 백업</div>
-    <div class="backupbar">
-      <button id="btnBackup">💾 <b>백업 저장</b></button>
-      <button id="btnRestore">📥 <b>복원</b></button>
-    </div>
-  </div>
-  <!-- 현재 투어 뷰 -->
-  <div id="viewCurrent">
-    <div id="tourTitleBar"></div>
-    <input id="hotelSearchInput" class="searchbox" placeholder="🔍 호텔명 검색">
-    <div class="toolbar">
-      <span class="lbl">방문 호텔</span>
-      <select class="sortsel" id="sortSel">
-        <option value="order">일정 순서</option>
-        <option value="city">도시별</option>
-        <option value="name">이름순</option>
-      </select>
-    </div>
+  <!-- 호텔 검색 뷰 -->
+  <div id="viewHotels">
+    <input id="searchInput" class="searchbox" placeholder="🔍 호텔명 또는 도시 검색">
     <div class="citychips" id="cityChips"></div>
-    <div id="list"></div>
-    <div id="endTourWrap"></div>
+    <button class="addbtn" id="btnAddHotel">＋ 새 호텔 추가</button>
+    <div id="hotelList"></div>
   </div>
-  <!-- 지난 투어 뷰 -->
-  <div id="viewPast" style="display:none"></div>
+  <!-- 상세 뷰 -->
+  <div id="viewDetail" style="display:none"></div>
   <!-- 통계 뷰 -->
   <div id="viewStats" style="display:none"></div>
-</div>
-<div class="bottomtabs" id="bottomTabs">
-  <button data-view="new"><span class="bi">➕</span>신규 투어</button>
-  <button data-view="current" class="active"><span class="bi">🏨</span>현재 투어</button>
-  <button data-view="past"><span class="bi">📁</span>지난 투어</button>
-  <button data-view="stats"><span class="bi">📊</span>통계</button>
-</div>
-<div class="saved-flash" id="flash">저장됨 ✓</div>
-<div class="modal-bg" id="ocrModal">
-  <div class="modal">
-    <div class="modal-head"><h3>📋 일정표에서 호텔 찾기</h3><p id="ocrSub">사진을 분석하고 있어요...</p></div>
-    <div class="modal-body" id="ocrBody"></div>
-    <div class="modal-foot" id="ocrFoot" style="display:none">
-      <button class="mf-cancel" data-act="ocrcancel">취소</button>
-      <button class="mf-add" data-act="ocradd">선택한 호텔 추가</button>
+  <!-- 백업 뷰 -->
+  <div id="viewBackup" style="display:none">
+    <div class="section-title">데이터 백업</div>
+    <div class="backupbar">
+      <button id="btnBackup">💾 백업 저장</button>
+      <button id="btnRestore">📥 복원</button>
     </div>
+    <p style="font-size:12px;color:var(--muted);line-height:1.6">백업 파일을 카톡 '나에게 보내기'나 클라우드에 보관해 두면 안전해요. 휴대폰을 바꾸거나 데이터가 사라져도 복원할 수 있어요.</p>
   </div>
 </div>
-<input type="file" id="schedInput" accept="image/*" hidden>
-<input type="file" id="photoInput" accept="image/*" hidden multiple>
-<input type="file" id="restoreInput" accept="application/json,.json" hidden>
-<script>
-const CITIES=['이스탄불','앙카라','부르사','이즈미르','쿠샤다스','파묵칼레','카파도키아','콘야','안탈리아','아피온','아이발륵'];
-const CITY_HINTS={
-  '이스탄불':['istanbul','이스탄불','sultanahmet','술탄','taksim','탁심','bosphorus','보스포러스','fatih'],
-  '앙카라':['ankara','앙카라','kizilay','kızılay'],
-  '부르사':['bursa','부르사','uludag','uludağ','울루다'],
-  '이즈미르':['izmir','이즈미르','alsancak','ephesus','에페소','셀축','selcuk','selçuk'],
-  '쿠샤다스':['kusadasi','kuşadası','쿠샤다스','쿠사다스'],
-  '파묵칼레':['pamukkale','파묵칼레','hierapolis','히에라폴리스','denizli','데니즐리'],
-  '카파도키아':['cappadocia','kapadokya','카파도키아','goreme','göreme','괴레메','uchisar','우치사르','urgup','ürgüp','네브셰히르','nevsehir','avanos','아바노스','kaymakli','카이막르'],
-  '콘야':['konya','콘야','mevlana','메블라나'],
-  '안탈리아':['antalya','안탈리아','kaleici','kaleiçi','lara','벨렉','belek'],
-  '아피온':['afyon','아피온','afyonkarahisar'],
-  '아이발륵':['ayvalik','ayvalık','아이발륵','아이발릭','cunda','junda']
-};
-const CITY_DEFAULTS={
-  '이스탄불':{breakfast:'07:00~10:00',alcohol:true},'앙카라':{breakfast:'07:00~09:30',alcohol:true},
-  '부르사':{breakfast:'07:00~09:30',alcohol:false},'이즈미르':{breakfast:'07:00~10:00',alcohol:true},
-  '파묵칼레':{breakfast:'07:30~09:30',alcohol:true},'카파도키아':{breakfast:'07:00~10:00',alcohol:true},
-  '콘야':{breakfast:'07:00~09:00',alcohol:false},'안탈리아':{breakfast:'07:00~10:00',alcohol:true},
-  '아피온':{breakfast:'07:00~09:30',alcohol:false},
-  '쿠샤다스':{breakfast:'07:00~10:00',alcohol:true},'아이발륵':{breakfast:'07:00~09:30',alcohol:true}
-};
-const CITY_EN={'이스탄불':'Istanbul','앙카라':'Ankara','부르사':'Bursa','이즈미르':'Izmir','쿠샤다스':'Kusadasi','파묵칼레':'Pamukkale','카파도키아':'Cappadocia','콘야':'Konya','안탈리아':'Antalya','아피온':'Afyon','아이발륵':'Ayvalik'};
-const KEY='tour_hotel_notes_v3';
-const LIBKEY='tour_hotel_library_v1';
 
-/* 호텔 사전: "도시+호텔명" 정규화 키로 정보 보관 */
-function loadLib(){try{const r=localStorage.getItem(LIBKEY);if(r)return JSON.parse(r);}catch(e){}return{};}
-function saveLib(lib){try{localStorage.setItem(LIBKEY,JSON.stringify(lib));}catch(e){}}
-function normKey(city,name){
-  const n=(s)=>(s||'').toLowerCase().replace(/[\s\-_.,'"()]/g,'').replace(/hotel|호텔/g,'');
-  return n(city)+'|'+n(name);
-}
-/* 과거 일정표에서 추출한 호텔명 시드 (최초 1회 주입, 학습 출발점) */
+<div class="bottomtabs" id="bottomTabs">
+  <button data-view="hotels" class="active"><span class="bi">🏨</span>호텔</button>
+  <button data-view="stats"><span class="bi">📊</span>통계</button>
+  <button data-view="backup"><span class="bi">💾</span>백업</button>
+</div>
+
+<div class="flash" id="flash"></div>
+<input type="file" id="photoInput" accept="image/*" multiple hidden>
+<input type="file" id="restoreInput" accept="application/json,.json" hidden>
+
+<script>
+/* ===================== 상수 ===================== */
+const CITIES=['이스탄불','앙카라','부르사','이즈미르','쿠샤다스','파묵칼레','카파도키아','콘야','안탈리아','아피온','아이발륵'];
+const CITY_EN={'이스탄불':'Istanbul','앙카라':'Ankara','부르사':'Bursa','이즈미르':'Izmir','쿠샤다스':'Kusadasi','파묵칼레':'Pamukkale','카파도키아':'Cappadocia','콘야':'Konya','안탈리아':'Antalya','아피온':'Afyon','아이발륵':'Ayvalik'};
+const CLAIM_TYPES=['객실 문제','냉/난방 문제','화장실 문제','음식 문제','기타 시설 문제'];
+const DBKEY='tour_hotel_db_v1';
+const OLDKEY='tour_hotel_notes_v3';     // 구버전 호텔 목록
+const LIBKEY='tour_hotel_library_v1';   // 구버전 사전
+const SEEDFLAG='tour_hotel_db_seed_v1';
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function normName(s){return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
+function normKey(city,name){const n=(s)=>(s||'').toLowerCase().replace(/[\s\-_.,'"()]/g,'').replace(/hotel|호텔/g,'');return n(city)+'|'+n(name);}
+function escapeHtml(s){return(s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
+function escapeAttr(s){return(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function flash(msg){const f=document.getElementById('flash');f.textContent=msg||'저장됨 ✓';f.classList.add('show');setTimeout(()=>f.classList.remove('show'),msg?2200:1000);}
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+
+/* 시드 호텔 (도시+이름+주소) */
 const SEED_HOTELS={
   '이스탄불':['PULLMAN','CROWNE PLAZA HARBIYE','SHERATON ATAKOY','CHIRAGAN PALACE KEMPINSKI','DELTA ISTANBUL WEST','WANDA VISTA','MARRIOTT PENDIK','SHERATON ISTANBUL ESENYURT'],
   '앙카라':['NEWPARK ANKARA','GRAND ANKARA HOTEL','GREEN PARK'],
@@ -311,667 +192,360 @@ const SEED_HOTELS={
   '부르사':['BAIA BURSA'],
   '아이발륵':['GRAND TEMIZEL']
 };
-const SEED_FLAG='tour_hotel_seed_done_v7';
-/* 일부 호텔의 주소 (시드 주입 시 함께 저장) */
 const SEED_ADDR={};
 SEED_ADDR[normKey('카파도키아','HANEDAN CAPPADOCIA SUITES')]='Yukarı mevki Şehit Ramazan Çelik Sk. Mustafapaşa, Ürgüp, Nevşehir / Türkiye, 50420';
-function seedLibraryOnce(){
-  if(localStorage.getItem(SEED_FLAG))return;        // 이미 이 버전 주입했으면 건너뜀
-  const lib=loadLib();
-  // 이전 시드(사용자가 안 건드린 seeded 항목)는 제거하고 새 시드로 다시 깔기. 직접 입력/저장한 건 보존.
-  Object.keys(lib).forEach(k=>{const r=lib[k];if(r&&r.seeded&&(!r.savedAt||r.savedAt===0)&&!r.wifiSsid&&!r.wifiPw&&!r.breakfast)delete lib[k];});
-  Object.keys(SEED_HOTELS).forEach(city=>{
-    SEED_HOTELS[city].forEach(name=>{
-      const k=normKey(city,name);
-      if(!lib[k]){lib[k]={name:name,city:city,address:SEED_ADDR[k]||'',wifiSsid:'',wifiId:'',wifiPw:'',breakfast:'',dinner:'',structure:'',lobbyBtn:'',elevator:null,alcohol:null,seeded:true,savedAt:0};}
-      else if(SEED_ADDR[k]&&!lib[k].address){lib[k].address=SEED_ADDR[k];}
+
+/* ===================== 데이터 모델 ===================== */
+/* hotel = {id,name,city,address,wifiSsid,wifiId,wifiPw,breakfast,dinner,structure,lobbyBtn,elevator,alcohol,notes,photos[],visits[],claims[]}
+   visit = {id,date}
+   claim = {id,date,room,type,memo}  (date = 방문 날짜와 연결되거나 자유) */
+function blankHotel(name,city){return{id:uid(),name:name||'',city:city||'',address:'',wifiSsid:'',wifiId:'',wifiPw:'',breakfast:'',dinner:'',structure:'',lobbyBtn:'',elevator:null,alcohol:null,notes:'',photos:[],visits:[],claims:[]};}
+
+let DB={hotels:[]};
+function loadDB(){try{const r=localStorage.getItem(DBKEY);if(r)return JSON.parse(r);}catch(e){}return null;}
+function saveDB(){try{localStorage.setItem(DBKEY,JSON.stringify(DB));flash();}catch(e){alert('저장 실패: 저장 공간이 부족할 수 있어요.');}}
+
+/* ===================== 마이그레이션 ===================== */
+function migrateFromOld(){
+  // 구버전 호텔 목록 + 사전을 호텔 DB로 편입
+  const byKey={};  // normKey -> hotel
+  const ensure=(name,city)=>{
+    const k=normKey(city,name);
+    if(!byKey[k]){const h=blankHotel(name,city);byKey[k]=h;}
+    return byKey[k];
+  };
+  // 1) 사전(library) 먼저 → 고정 정보 + 시드
+  try{
+    const lib=JSON.parse(localStorage.getItem(LIBKEY)||'{}');
+    Object.keys(lib).forEach(k=>{
+      const r=lib[k];if(!r||!r.name||!r.city)return;
+      const h=ensure(r.name,r.city);
+      ['address','wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn'].forEach(f=>{if(r[f]&&!h[f])h[f]=r[f];});
+      if(h.elevator===null&&r.elevator!==undefined&&r.elevator!==null)h.elevator=r.elevator;
+      if(h.alcohol===null&&r.alcohol!==undefined&&r.alcohol!==null)h.alcohol=r.alcohol;
+      if(r.notes&&!h.notes)h.notes=r.notes;
+      if(r.photos&&r.photos.length&&h.photos.length===0)h.photos=r.photos.slice();
     });
-  });
-  saveLib(lib);
-  localStorage.setItem(SEED_FLAG,'1');
+  }catch(e){}
+  // 2) 구버전 호텔 목록(notes) → 고정 정보 보강 + 방문/클레임 누적
+  try{
+    const old=JSON.parse(localStorage.getItem(OLDKEY)||'{}');
+    const tours=Array.isArray(old.tours)?old.tours:[];
+    const tourName=(id)=>{const t=tours.find(x=>x.id===id);return t?t.name:'';};
+    (old.hotels||[]).forEach(o=>{
+      if(!o.name)return;
+      const h=ensure(o.name,o.city||'');
+      // 고정 정보(빈 곳만 채움)
+      ['address','wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn'].forEach(f=>{if(o[f]&&!h[f])h[f]=o[f];});
+      if(h.elevator===null&&o.elevator!==undefined&&o.elevator!==null)h.elevator=o.elevator;
+      if(h.alcohol===null&&o.alcohol!==undefined&&o.alcohol!==null)h.alcohol=o.alcohol;
+      if(o.notes&&o.notes.length>(h.notes||'').length)h.notes=o.notes;
+      if(o.photos&&o.photos.length){o.photos.forEach(p=>{if(h.photos.indexOf(p)<0&&h.photos.length<8)h.photos.push(p);});}
+      // 방문 기록: 투어가 있으면 투어 1개당 방문 1개 (날짜는 투어 생성일 추정 불가 → 미상)
+      // 클레임 누적
+      (o.claims||[]).forEach(cl=>{
+        if(!cl||(!cl.room&&!cl.type&&!cl.memo))return;
+        h.claims.push({id:uid(),date:'',room:cl.room||'',type:(cl.type||'').trim()||'기타',memo:cl.memo||''});
+      });
+    });
+  }catch(e){}
+  // 3) 시드 주소 보강
+  Object.keys(SEED_ADDR).forEach(k=>{if(byKey[k]&&!byKey[k].address)byKey[k].address=SEED_ADDR[k];});
+  // 4) 시드에 있는데 아직 없는 호텔 추가
+  Object.keys(SEED_HOTELS).forEach(city=>{SEED_HOTELS[city].forEach(name=>{ensure(name,city);});});
+
+  DB={hotels:Object.values(byKey)};
+  localStorage.setItem(DBKEY,JSON.stringify(DB));
+  localStorage.setItem(SEEDFLAG,'1');
 }
-/* 카드 정보를 사전에 저장(이름·도시 있을 때만) */
-function libStore(h){
-  if(!h.name||!h.city)return;
-  const lib=loadLib();
-  const key=normKey(h.city,h.name);
-  const prev=lib[key]||{};
-  // 사진: 현재 호텔에 사진이 있으면 그걸 저장(최대 4장), 없으면 기존 사전 사진 유지
-  const photos=(h.photos&&h.photos.length)?h.photos.slice(0,4):(prev.photos||[]);
-  // 메모: 현재 입력값 우선, 없으면 기존 사전 메모 유지
-  const notes=(h.notes&&h.notes.trim())?h.notes:(prev.notes||'');
-  lib[key]={name:h.name,city:h.city,address:h.address||prev.address||'',wifiSsid:h.wifiSsid,wifiId:h.wifiId,wifiPw:h.wifiPw,breakfast:h.breakfast,dinner:h.dinner,structure:h.structure,lobbyBtn:h.lobbyBtn,elevator:h.elevator,alcohol:h.alcohol,notes:notes,photos:photos,savedAt:Date.now()};
-  saveLib(lib);
-}
-/* 사전에서 조회 */
-function libLookup(city,name){if(!city||!name)return null;const lib=loadLib();return lib[normKey(city,name)]||null;}
-/* 빈 칸만 사전 값으로 채우기. 반환: 채운 항목 수 */
-function libFill(h){
-  const rec=libLookup(h.city,h.name);if(!rec)return 0;
-  let cnt=0;
-  ['wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn','address','notes'].forEach(f=>{if(!h[f]&&rec[f]){h[f]=rec[f];cnt++;}});
-  ['elevator','alcohol'].forEach(f=>{if(h[f]===null&&rec[f]!==null&&rec[f]!==undefined){h[f]=rec[f];cnt++;}});
-  // 사진: 현재 호텔에 사진이 없고 사전에 있으면 불러오기
-  if((!h.photos||h.photos.length===0)&&rec.photos&&rec.photos.length){h.photos=rec.photos.slice();cnt++;}
-  return cnt;
-}
-let state=load();let activePhotoHotel=null;let filterCity='전체';let sortMode='order';
-const TOUR_TYPES=['성지순례','한진관광'];
-let filterType='전체';
-let mainView='current';  // 'current' | 'past' | 'stats'
-let viewingPastTourId=null;
-let hotelSearch='';
-/* 구버전 호환: wifiName → wifiSsid */
-(function migrate(){let ch=false;(state.hotels||[]).forEach(h=>{if(h.wifiName!==undefined){if(!h.wifiSsid)h.wifiSsid=h.wifiName;delete h.wifiName;ch=true;}if(h.wifiId===undefined)h.wifiId='';if(!Array.isArray(h.types)){h.types=[];ch=true;}});if(ch)localStorage.setItem(KEY,JSON.stringify(state));
-const lib=loadLib();let lc=false;Object.keys(lib).forEach(k=>{const r=lib[k];if(r.wifiName!==undefined){if(!r.wifiSsid)r.wifiSsid=r.wifiName;delete r.wifiName;lc=true;}});if(lc)saveLib(lib);})();
-seedLibraryOnce();
-/* 투어 회차 마이그레이션: tours가 없으면 기존 호텔을 '이전 기록' 투어로 묶음 */
-(function migrateTours(){
-  if(!Array.isArray(state.tours))state.tours=[];
-  if(state.currentTourId===undefined)state.currentTourId=null;
-  let changed=false;
-  if(state.tours.length===0){
-    if(state.hotels.length>0){
-      const tid='t'+Date.now().toString(36);
-      state.tours.push({id:tid,name:'이전 기록',createdAt:Date.now()});
-      state.hotels.forEach(h=>{if(!h.tourId)h.tourId=tid;});
-      state.currentTourId=tid;
-      changed=true;
-    }
-  }else{
-    // tourId 없는 호텔은 현재 투어로 귀속
-    const cur=state.currentTourId||(state.tours[state.tours.length-1]&&state.tours[state.tours.length-1].id);
-    state.hotels.forEach(h=>{if(!h.tourId){h.tourId=cur;changed=true;}});
-  }
-  if(changed)localStorage.setItem(KEY,JSON.stringify(state));
+
+/* 초기화 */
+(function init(){
+  const existing=loadDB();
+  if(existing){DB=existing;if(!Array.isArray(DB.hotels))DB.hotels=[];}
+  else{migrateFromOld();}
 })();
 
-function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){}return{schedule:null,hotels:[],tours:[],currentTourId:null};}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state));flash();}catch(e){alert('저장 공간이 부족합니다. 사진 수를 줄여주세요.');}}
-function flash(){const f=document.getElementById('flash');f.textContent='저장됨 ✓';f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1100);}
-function toast(msg){const f=document.getElementById('flash');f.textContent=msg;f.classList.add('show');setTimeout(()=>f.classList.remove('show'),2400);}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
-const CLAIM_TYPES=['객실 문제','냉/난방 문제','화장실 문제','음식 문제','기타 시설 문제'];
-function blankHotel(name='',dayLabel='',city=''){return{id:uid(),tourId:state.currentTourId||null,name,dayLabel,city,address:'',types:[],wifiSsid:'',wifiId:'',wifiPw:'',breakfast:'',dinner:'',structure:'',lobbyBtn:'',elevator:null,alcohol:null,notes:'',claims:[],photos:[]};}
-/* 새 투어 생성 후 현재 투어로 지정 */
-function createNewTour(name){
-  if(!name){const d=new Date();const yy=String(d.getFullYear()).slice(2);const mm=('0'+(d.getMonth()+1)).slice(-2);const dd=('0'+d.getDate()).slice(-2);name=yy+mm+dd+' 투어';}
-  const tid='t'+Date.now().toString(36);
-  state.tours.push({id:tid,name:name,createdAt:Date.now()});
-  state.currentTourId=tid;
-  mainView='current';viewingPastTourId=null;
-  return tid;
-}
-function currentHotels(){return state.hotels.filter(h=>h.tourId===state.currentTourId);}
-function tourName(id){const t=state.tours.find(x=>x.id===id);return t?t.name:'투어';}
-function guessCity(text){const t=(text||'').toLowerCase();for(const c of CITIES){for(const kw of CITY_HINTS[c]){if(t.includes(kw.toLowerCase()))return c;}}return '';}
+/* ===================== 상태 ===================== */
+let mainView='hotels';
+let detailId=null;
+let search='';
+let filterCity='전체';
+let saveTimer=null;
+let activePhotoHotel=null;
 
-/* 고객 안내문 (카카오톡용 꾸민 문구) */
-function buildGuestMessage(h){
-  const L=[];
-  L.push('🏨 오늘의 숙소 안내');
-  L.push('━━━━━━━━━━━━━');
-  L.push('');
-  L.push('🏨 호텔  '+(h.name||'-'));
-  L.push('');
-  L.push('📶 와이파이');
-  L.push('   • 와이파이 명  '+(h.wifiSsid||'-'));
-  L.push('   • 이름  '+(h.wifiId||'-'));
-  L.push('   • 비밀번호  '+(h.wifiPw||'-'));
-  L.push('');
-  L.push('🍳 익일 조식 제공 시간  '+(h.breakfast?h.breakfast.split('~')[0].trim():'-')+' 부터');
-  if(h.lobbyBtn){L.push('');L.push('🛗 로비층은 엘리베이터에서 ['+h.lobbyBtn+'] 버튼을 눌러주세요.');}
-  L.push('');
-  L.push('━━━━━━━━━━━━━');
-  L.push('와이파이 접속이 어려우신 분들은 로비 또는 석식 시간에 제가 도움드리겠습니다.');
-  return L.join('\n');
-}
-function copyGuest(h,btn){
-  const msg=buildGuestMessage(h);
-  const done=()=>{if(btn){btn.classList.add('done');const o=btn.textContent;btn.textContent='✓ 복사 완료! 카카오톡에 붙여넣으세요';setTimeout(()=>{btn.classList.remove('done');btn.textContent=o;},1800);}toast('안내문이 복사되었어요');};
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(done).catch(()=>fb(msg,done));}
-  else fb(msg,done);
-}
-function fb(txt,cb){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');cb();}catch(e){alert('복사 실패. 길게 눌러 복사하세요.');}document.body.removeChild(ta);}
-
-/* ===== OCR: 일정표 사진에서 호텔명 자동 추출 ===== */
-let ocrCandidates=[];
-const modal=()=>document.getElementById('ocrModal');
-
-function openOcrModal(){modal().classList.add('show');document.getElementById('ocrFoot').style.display='none';}
-function closeOcrModal(){modal().classList.remove('show');ocrCandidates=[];}
-
-/* OCR 결과 텍스트에서 호텔명 후보 뽑기 */
-/* 사전(학습)에 저장된 호텔명 목록 */
-function knownHotelNames(){
-  const lib=loadLib();const names=[];
-  Object.keys(lib).forEach(k=>{if(lib[k]&&lib[k].name)names.push(lib[k].name);});
-  return names;
-}
-/* 비교용 정규화 */
-function normName(s){return (s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');}
-/* 알려진 호텔 브랜드 (사전이 비어도 잡을 기본 목록) */
-const HOTEL_BRANDS=['PULLMAN','HILTON','HOLIDAY INN','GREEN PARK','RAMADA','RADISSON','SHERATON','MARRIOTT','NOVOTEL','MERCURE','IBIS','CROWNE PLAZA','WYNDHAM','DOUBLETREE','DEDEMAN','DIVAN','RIXOS','HYATT','CONRAD','SWISSOTEL','MOVENPICK','KAYA','LIMAK','TITANIC','RICHMOND','PERISSIA','SUHAN','LYCUS','RENEX','WANDA VISTA','KEMPINSKI','BAYIR DIAMOND','ADEM PIRA','ORTAHISAR','NUJELM','NG AFYON','TEMIZEL','NEWPARK','CHIRAGAN','DELTA','BAIA','CRYSTAL KAYMAKLI','DOGA THERMAL'];
-
-/* 레벤슈타인 거리(편집 거리) — OCR 오타 흡수용 */
-function editDist(a,b){
-  a=a||'';b=b||'';const m=a.length,n=b.length;
-  if(!m)return n;if(!n)return m;
-  let prev=Array.from({length:n+1},(_,i)=>i);
-  for(let i=1;i<=m;i++){
-    let cur=[i];
-    for(let j=1;j<=n;j++){
-      const cost=a[i-1]===b[j-1]?0:1;
-      cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+cost);
-    }
-    prev=cur;
-  }
-  return prev[n];
-}
-/* 두 정규화 문자열의 유사도(0~1) */
-function similarity(a,b){const d=editDist(a,b);const L=Math.max(a.length,b.length);return L?1-d/L:0;}
-
-/* 텍스트(정규화 전체)에 후보명이 정확히 포함되는지 */
-function containsExact(normText,name){const nk=normName(name);return nk.length>=3 && normText.includes(nk);}
-
-/* 텍스트의 단어 조각들 중 후보명과 유사한 게 있는지 (OCR 오타 대응) */
-function fuzzyInText(words,name){
-  const nk=normName(name);if(nk.length<4)return 0;
-  let best=0;
-  // 후보가 N단어면 텍스트에서 연속 N단어 묶음과 비교
-  const parts=name.trim().split(/\s+/).length;
-  for(let i=0;i<words.length;i++){
-    for(let span=1;span<=parts+1 && i+span<=words.length;span++){
-      const chunk=normName(words.slice(i,i+span).join(''));
-      if(chunk.length<3)continue;
-      const s=similarity(chunk,nk);
-      if(s>best)best=s;
-    }
-  }
-  return best;
-}
-
-/* 일정표 텍스트의 연속 단어 묶음이 사전 호텔명과 거의 같으면 매칭 (HOLIDAY INN → HOLIDAY INN LARA 흡수, 단어 하나만 겹치는 오작동은 방지) */
-function phraseMatch(words,name){
-  const parts=name.trim().split(/\s+/);
-  if(parts.length<2)return false;
-  const nk=normName(name);
-  for(let i=0;i<words.length;i++){
-    for(let span=2;span<=4 && i+span<=words.length;span++){
-      const phrase=normName(words.slice(i,i+span).join(''));
-      if(phrase.length<6)continue;
-      // 유사도 높거나, 접두/접미인데 호텔명의 70% 이상을 차지할 때만 (단어 하나 겹침 방지)
-      if(similarity(phrase,nk)>=0.82)return true;
-      if((nk.startsWith(phrase)||nk.endsWith(phrase)) && phrase.length>=nk.length*0.7)return true;
-    }
-  }
-  return false;
-}
-
-function extractHotelCandidates(text){
-  const normText=normName(text);
-  const words=text.toUpperCase().split(/[^A-Z0-9]+/).filter(w=>w.length>=2);
-  const found=[];const seen=new Set();
-  const push=(name,score)=>{const key=normName(name);if(key.length<3||seen.has(key))return;seen.add(key);found.push({name:name.trim().replace(/\s+/g,' '),score});};
-
-  // 후보 풀: 학습된 사전 호텔명 + 기본 브랜드
-  const known=knownHotelNames();
-  const pool=[];
-  known.forEach(n=>pool.push({name:n,base:100}));
-  HOTEL_BRANDS.forEach(n=>{if(!pool.some(p=>normName(p.name)===normName(n)))pool.push({name:n,base:78});});
-
-  pool.forEach(p=>{
-    if(containsExact(normText,p.name)){push(p.name,p.base);return;}     // 정확 포함
-    const sim=fuzzyInText(words,p.name);
-    if(sim>=0.80){push(p.name,Math.round(p.base*sim)-10);return;}        // 유사(오타) 매칭
-    if(phraseMatch(words,p.name))push(p.name,p.base-20);                 // 구절 포함(부분표기 흡수)
-  });
-
-  // 계열 중복 제거: 한 이름이 다른 이름을 통째로 포함하면(HOLIDAY INN ⊂ HOLIDAY INN LARA) 점수 높은 쪽만 남김
-  found.sort((a,b)=>b.score-a.score);
-  const kept=[];
-  found.forEach(c=>{
-    const ck=normName(c.name);
-    const dup=kept.find(k=>{const kk=normName(k.name);return kk.includes(ck)||ck.includes(kk);});
-    if(!dup)kept.push(c);
-  });
-  return kept;
-}
-
-function startOcr(dataUrl){
-  openOcrModal();
-  const body=document.getElementById('ocrBody');const sub=document.getElementById('ocrSub');
-  sub.textContent='사진을 분석하고 있어요... (10~30초 정도 걸려요)';
-  body.innerHTML='<div class="ocr-status">🔍 글자를 읽는 중...<div class="ocr-bar"><i id="ocrProg"></i></div></div>';
-  if(typeof Tesseract==='undefined'){
-    sub.textContent='OCR 모듈을 불러오지 못했어요 (인터넷 연결 확인)';
-    showManualOnly();return;
-  }
-  Tesseract.recognize(dataUrl,'eng',{logger:m=>{if(m.status==='recognizing text'){const p=document.getElementById('ocrProg');if(p)p.style.width=Math.round(m.progress*100)+'%';}},tessedit_char_whitelist:'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789'})
-    .then(({data})=>{
-      const cands=extractHotelCandidates(data.text||'');
-      showCandidates(cands);
-    })
-    .catch(()=>{document.getElementById('ocrSub').textContent='분석에 실패했어요. 직접 입력해 주세요.';showManualOnly();});
-}
-
-function showCandidates(cands){
-  // 도시까지 매칭되는 호텔만 후보로. (도시 없는 파편 RAMADA/WYNDHAM/KAYA 등 제외)
-  ocrCandidates=cands.map(c=>{
-    let city='';const lib=loadLib();
-    Object.keys(lib).forEach(k=>{if(lib[k]&&normName(lib[k].name)===normName(c.name)&&lib[k].city)city=lib[k].city;});
-    if(!city)city=guessCity(c.name);
-    return {name:c.name,city:city,sel:c.score>=50};
-  }).filter(c=>c.city);  // 도시 없는 후보는 표시하지 않음
-  const body=document.getElementById('ocrBody');const sub=document.getElementById('ocrSub');
-  const high=ocrCandidates.filter(c=>c.sel).length;
-  if(ocrCandidates.length===0){
-    sub.textContent='호텔을 자동으로 찾지 못했어요. 아래에서 직접 입력해 주세요.';
-  }else{
-    sub.textContent='호텔 후보예요 ('+ocrCandidates.length+'곳) · 맞는 것만 남기세요';
-  }
-  renderCandidates();
-  document.getElementById('ocrFoot').style.display='flex';
-}
-function showManualOnly(){ocrCandidates=[];renderCandidates();document.getElementById('ocrFoot').style.display='flex';}
-
-function renderCandidates(){
-  const body=document.getElementById('ocrBody');
-  let html=ocrCandidates.map((c,i)=>'<div class="cand '+(c.sel?'sel':'')+'" data-ci="'+i+'"><div class="ck">'+(c.sel?'✓':'')+'</div><div class="nm">'+escapeHtml(c.name)+'</div>'+(c.city?'<div class="cty">'+c.city+'</div>':'')+'</div>').join('');
-  html+='<div class="manual-add"><input id="manualName" placeholder="호텔명 직접 추가"><button data-act="manualadd">추가</button></div>';
-  body.innerHTML=html;
-}
-
-function startOcrFromSchedule(){startOcr(state.schedule);}
-function cityCounts(){const c={};currentHotels().forEach(h=>{if(h.city)c[h.city]=(c[h.city]||0)+1;});return c;}
-function renderChips(){const box=document.getElementById('cityChips');const counts=cityCounts();const total=currentHotels().length;let html='<div class="chip '+(filterCity==='전체'?'active':'')+'" data-city="전체">전체<span class="n">'+total+'</span></div>';CITIES.forEach(c=>{const n=counts[c]||0;html+='<div class="chip '+(filterCity===c?'active':'')+'" data-city="'+c+'">'+c+(n?'<span class="n">'+n+'</span>':'')+'</div>';});box.innerHTML=html;}
-
-function dayNum(h){const m=(h.dayLabel||'').match(/\d+/);return m?parseInt(m[0],10):9999;}
-function visibleHotels(){
-  let arr=state.hotels.map((h,i)=>({h,i})).filter(x=>x.h.tourId===state.currentTourId);
-  if(hotelSearch.trim()){const q=hotelSearch.trim().toLowerCase();arr=arr.filter(x=>(x.h.name||'').toLowerCase().includes(q)||(x.h.city||'').toLowerCase().includes(q));}
-  if(filterCity!=='전체')arr=arr.filter(x=>x.h.city===filterCity);
-  if(sortMode==='city')arr.sort((a,b)=>(a.h.city||'힣').localeCompare(b.h.city||'힣','ko')||dayNum(a.h)-dayNum(b.h));
-  else if(sortMode==='name')arr.sort((a,b)=>(a.h.name||'').localeCompare(b.h.name||'','ko'));
-  else arr.sort((a,b)=>dayNum(a.h)-dayNum(b.h)||a.i-b.i);  // 일정 순서 = Day 번호
-  return arr;
-}
-
-function setBottomTab(){document.querySelectorAll('#bottomTabs button').forEach(b=>b.classList.toggle('active',b.dataset.view===mainView));}
+function hotelById(id){return DB.hotels.find(h=>h.id===id);}
+function setTab(){document.querySelectorAll('#bottomTabs button').forEach(b=>b.classList.toggle('active',b.dataset.view===mainView));}
+function debouncedSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(DBKEY,JSON.stringify(DB));flash();},500);}
 
 function render(){
-  document.getElementById('countPill').textContent=currentHotels().length+'곳';
-  setBottomTab();
-  const vn=document.getElementById('viewNew'),vc=document.getElementById('viewCurrent'),vp=document.getElementById('viewPast'),vs=document.getElementById('viewStats');
-  vn.style.display=mainView==='new'?'block':'none';
-  vc.style.display=mainView==='current'?'block':'none';
-  vp.style.display=mainView==='past'?'block':'none';
-  vs.style.display=mainView==='stats'?'block':'none';
-  if(mainView==='new')renderNew();
-  else if(mainView==='current')renderCurrent();
-  else if(mainView==='past')renderPast();
-  else renderStats();
-}
-function renderNew(){
-  const sw=document.getElementById('schedThumbWrap');sw.innerHTML='';
-  if(state.schedule){const d=document.createElement('div');d.className='sched-thumb';d.innerHTML='<img src="'+state.schedule+'"><button class="rm" data-act="rmsched">×</button>';sw.appendChild(d);}
+  document.getElementById('countPill').textContent=DB.hotels.length+'곳';
+  setTab();
+  document.getElementById('viewHotels').style.display=mainView==='hotels'?'block':'none';
+  document.getElementById('viewDetail').style.display=mainView==='detail'?'block':'none';
+  document.getElementById('viewStats').style.display=mainView==='stats'?'block':'none';
+  document.getElementById('viewBackup').style.display=mainView==='backup'?'block':'none';
+  if(mainView==='hotels')renderHotels();
+  else if(mainView==='detail')renderDetail();
+  else if(mainView==='stats')renderStats();
 }
 
-function renderCurrent(){
-  // 투어명 헤더
-  const tb=document.getElementById('tourTitleBar');
-  if(state.currentTourId){tb.innerHTML='<div class="tourtitle"><span class="tt-ic">🧳</span><input id="tourNameInput" value="'+escapeAttr(tourName(state.currentTourId))+'" placeholder="투어 이름 (예: 260617 한진관광)"><span class="tt-edit">✎ 수정</span></div>';}
-  else tb.innerHTML='';
+/* ---------- 호텔 목록 ---------- */
+function cityCounts(){const c={};DB.hotels.forEach(h=>{if(h.city)c[h.city]=(c[h.city]||0)+1;});return c;}
+function renderChips(){
+  const box=document.getElementById('cityChips');const counts=cityCounts();
+  let html='<div class="chip '+(filterCity==='전체'?'active':'')+'" data-city="전체">전체<span class="n">'+DB.hotels.length+'</span></div>';
+  CITIES.forEach(c=>{const n=counts[c]||0;if(!n&&filterCity!==c)return;html+='<div class="chip '+(filterCity===c?'active':'')+'" data-city="'+c+'">'+c+(n?'<span class="n">'+n+'</span>':'')+'</div>';});
+  box.innerHTML=html;
+}
+function visibleHotels(){
+  let arr=DB.hotels.slice();
+  if(search.trim()){const q=search.trim().toLowerCase();arr=arr.filter(h=>(h.name||'').toLowerCase().includes(q)||(h.city||'').toLowerCase().includes(q));}
+  if(filterCity!=='전체')arr=arr.filter(h=>h.city===filterCity);
+  arr.sort((a,b)=>(b.claims.length-a.claims.length)||(b.visits.length-a.visits.length)||(a.name||'').localeCompare(b.name||'','ko'));
+  return arr;
+}
+function renderHotels(){
   renderChips();
-  const list=document.getElementById('list');list.innerHTML='';
-  const endWrap=document.getElementById('endTourWrap');endWrap.innerHTML='';
+  const list=document.getElementById('hotelList');
   const vis=visibleHotels();
-  if(vis.length===0){
-    let msg;
-    if(hotelSearch.trim())msg='검색 결과가 없어요.';
-    else if(!state.currentTourId)msg='진행 중인 투어가 없어요.<br>하단 <b>＋ 신규 투어</b>에서 새 투어를 시작하세요.';
-    else msg='이번 투어에 등록된 호텔이 없어요.<br>일정표를 올리거나 직접 추가해 보세요.';
-    list.innerHTML='<div class="empty"><div class="ic">🛏️</div><p>'+msg+'</p></div>';return;
-  }
-  vis.forEach(x=>list.appendChild(cardEl(x.h,x.i)));
-  // 투어 종료 / 전부 삭제 버튼 (현재 투어에 호텔이 있을 때)
-  if(state.currentTourId && currentHotels().length>0 && !hotelSearch.trim()){
-    endWrap.innerHTML='<button class="endtour-btn" id="btnEndTour">🏁 투어 종료 (지난 투어로 보내기)</button>'+
-      '<button class="deleteall-btn" id="btnDeleteAll">🗑 현재 호텔 전부 삭제</button>';
-  }
+  if(vis.length===0){list.innerHTML='<div class="empty"><div class="ic">🔍</div><p>'+(search.trim()||filterCity!=='전체'?'해당하는 호텔이 없어요.':'아직 호텔이 없어요.<br>+ 새 호텔 추가로 등록하세요.')+'</p></div>';return;}
+  list.innerHTML=vis.map(h=>{
+    const sub=[];if(h.city)sub.push('<span class="hi-city">'+h.city+'</span>');
+    sub.push('방문 '+h.visits.length+'회');
+    if(h.claims.length)sub.push('클레임 '+h.claims.length+'건');
+    return '<div class="hotel-item" data-id="'+h.id+'"><div class="hi-ic">🏨</div><div class="hi-meta"><div class="hi-name">'+escapeHtml(h.name||'(이름 없음)')+'</div><div class="hi-sub">'+sub.join(' · ')+'</div></div>'+(h.claims.length?'<div class="hi-badge">'+h.claims.length+'</div>':'')+'<div class="hi-chev">›</div></div>';
+  }).join('');
 }
 
-function renderPast(){
-  const vp=document.getElementById('viewPast');
-  const pastTours=state.tours.filter(t=>t.id!==state.currentTourId).slice().reverse();
-  // 특정 투어 열람 중
-  if(viewingPastTourId){
-    const t=state.tours.find(x=>x.id===viewingPastTourId);
-    const hotels=state.hotels.filter(h=>h.tourId===viewingPastTourId);
-    let html='<button class="backlink" data-act="pastback">← 투어 목록</button>';
-    html+='<div class="tourtitle"><span class="tt-ic">📁</span><div style="font-size:15px;font-weight:700">'+escapeHtml(t?t.name:'투어')+'</div></div>';
-    if(hotels.length===0)html+='<div class="empty"><p>등록된 호텔이 없어요.</p></div>';
-    else html+=hotels.map(h=>'<div class="simple-hotel"><span class="sh-day">'+escapeHtml(h.dayLabel||'')+'</span><span class="sh-name">'+escapeHtml(h.name||'(미입력)')+'</span>'+(h.city?'<span class="sh-city">'+h.city+'</span>':'')+'</div>').join('');
-    vp.innerHTML=html;return;
-  }
-  // 투어 목록
-  if(pastTours.length===0){vp.innerHTML='<div class="empty" style="padding-top:60px"><div class="ic">📁</div><p>지난 투어가 없어요.<br>새 일정표를 스캔하면 이전 투어가 여기 쌓여요.</p></div>';return;}
-  let html='<div class="section-title" style="margin-top:18px">지난 투어 ('+pastTours.length+')</div>';
-  html+=pastTours.map(t=>{const n=state.hotels.filter(h=>h.tourId===t.id).length;const claims=state.hotels.filter(h=>h.tourId===t.id).reduce((s,h)=>s+(h.claims?h.claims.length:0),0);return '<div class="tourlist-item" data-act="opentour" data-tid="'+t.id+'"><div class="tl-ic">🧳</div><div class="tl-meta"><div class="tl-name">'+escapeHtml(t.name)+'</div><div class="tl-sub">호텔 '+n+'곳'+(claims?' · 클레임 '+claims+'건':'')+'</div></div><div class="tl-chev">›</div></div>';}).join('');
-  vp.innerHTML=html;
+/* ---------- 호텔 상세 ---------- */
+function toggleBtns(h){
+  return '<div class="card-block"><h3>편의</h3>'+
+    '<div class="two">'+
+      '<div class="field"><label>🛗 엘리베이터</label><div class="toggle-row">'+
+        '<div class="tg '+(h.elevator===true?'on':'')+'" data-tg="elevator" data-v="1">있음</div>'+
+        '<div class="tg '+(h.elevator===false?'off':'')+'" data-tg="elevator" data-v="0">없음</div>'+
+      '</div></div>'+
+      '<div class="field"><label>🍷 주류 판매</label><div class="toggle-row">'+
+        '<div class="tg '+(h.alcohol===true?'on':'')+'" data-tg="alcohol" data-v="1">있음</div>'+
+        '<div class="tg '+(h.alcohol===false?'off':'')+'" data-tg="alcohol" data-v="0">없음</div>'+
+      '</div></div>'+
+    '</div></div>';
 }
-
-/* 호텔명별 집계: 이용횟수(투어 수), 클레임 수, 유형, 히스토리 */
-function buildHotelStats(){
-  const stats={};  // key: 정규화 호텔명
-  state.hotels.forEach(h=>{
-    const name=h.name||'(미입력)';
-    const key=normName(name)||name;
-    if(!stats[key])stats[key]={name:name,city:h.city||'',uses:0,tourIds:new Set(),claims:0,byType:{},history:[]};
-    const s=stats[key];
-    if(h.city&&!s.city)s.city=h.city;
-    s.uses++;
-    if(h.tourId)s.tourIds.add(h.tourId);
-    (h.claims||[]).forEach(cl=>{
-      s.claims++;
-      const t=cl.type&&cl.type.trim()?cl.type.trim():'기타';
-      s.byType[t]=(s.byType[t]||0)+1;
-      s.history.push({tour:tourName(h.tourId),tourId:h.tourId,room:cl.room||'',type:t,memo:cl.memo||''});
-    });
+function photosBlock(h){
+  let ph=h.photos.map((p,i)=>'<div class="photo"><img src="'+p+'"><button class="rm" data-act="rmphoto" data-pi="'+i+'">×</button></div>').join('');
+  return '<div class="card-block"><h3>📷 사진</h3><div class="photos">'+ph+'<button class="addphoto" data-act="addphoto">＋</button></div></div>';
+}
+function claimsForVisit(h,date){return h.claims.filter(c=>c.date===date);}
+function visitsBlock(h){
+  let html='<div class="card-block"><h3>🗓️ 방문 기록 ('+h.visits.length+'회)</h3>';
+  const sorted=h.visits.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(sorted.length===0)html+='<div style="font-size:12.5px;color:var(--muted);margin-bottom:8px">아직 방문 기록이 없어요.</div>';
+  sorted.forEach(v=>{
+    const cc=claimsForVisit(h,v.date).length;
+    html+='<div class="visit-item"><span class="vi-date">'+escapeHtml(v.date||'날짜 미상')+'</span>'+(cc?'<span class="vi-claims">클레임 '+cc+'</span>':'')+'<button class="vi-del" data-act="visitdel" data-vid="'+v.id+'">🗑</button></div>';
   });
-  return stats;
+  html+='<div class="visit-add-row"><input type="date" id="visitDate" value="'+todayStr()+'"><button data-act="visitadd">＋ 방문 추가</button></div></div>';
+  return html;
 }
-let statHotelKey=null;  // 통계에서 열람 중인 호텔
-
-function renderStats(){
-  const vs=document.getElementById('viewStats');
-  const stats=buildHotelStats();
-  const keys=Object.keys(stats);
-  // 상세 뷰
-  if(statHotelKey&&stats[statHotelKey]){
-    const s=stats[statHotelKey];
-    let html='<button class="backlink" data-act="statback">← 통계 목록</button>';
-    html+='<div class="tourtitle"><span class="tt-ic">🏨</span><div style="flex:1"><div style="font-size:16px;font-weight:700">'+escapeHtml(s.name)+'</div>'+(s.city?'<div style="font-size:12px;color:var(--accent);margin-top:2px">'+s.city+'</div>':'')+'</div></div>';
-    // 요약 숫자
-    html+='<div style="display:flex;gap:10px;margin-top:14px">'+
-      '<div class="stat-card" style="flex:1;text-align:center;margin:0"><div style="font-size:24px;font-weight:800;color:var(--accent2)">'+s.tourIds.size+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">이용 투어</div></div>'+
-      '<div class="stat-card" style="flex:1;text-align:center;margin:0"><div style="font-size:24px;font-weight:800;color:var(--red)">'+s.claims+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">총 클레임</div></div>'+
+function typeOpts(sel){return ['<option value="">종류</option>'].concat(CLAIM_TYPES.map(t=>'<option value="'+t+'" '+(sel===t?'selected':'')+'>'+t+'</option>')).concat(['<option value="__c" '+(sel&&CLAIM_TYPES.indexOf(sel)<0?'selected':'')+'>직접 입력</option>']).join('');}
+function claimsBlock(h){
+  let html='<div class="card-block"><h3>📋 클레임 ('+h.claims.length+')</h3>';
+  const groups={};h.claims.forEach((c,idx)=>{const d=c.date||'날짜 미상';(groups[d]=groups[d]||[]).push(idx);});
+  const dates=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
+  dates.forEach(d=>{
+    html+='<div class="claim-date">'+escapeHtml(d)+'</div>';
+    groups[d].forEach(idx=>{
+      const c=h.claims[idx];const custom=c.type&&CLAIM_TYPES.indexOf(c.type)<0;
+      html+='<div class="claim-item" data-idx="'+idx+'">'+
+        '<div class="claim-row"><input class="claim-room" data-cf="room" value="'+escapeAttr(c.room)+'" placeholder="호실"><select class="claim-type" data-cf="type">'+typeOpts(c.type)+'</select><button class="claim-del" data-act="claimdel">🗑</button></div>'+
+        (custom?'<input class="claim-memo" data-cf="customtype" value="'+escapeAttr(c.type)+'" placeholder="종류 직접 입력" style="margin-top:8px">':'')+
+        '<textarea class="claim-memo" data-cf="memo" placeholder="상세 내용">'+escapeHtml(c.memo)+'</textarea>'+
       '</div>';
-    // 유형별
-    if(s.claims>0){
-      html+='<div class="stat-card" style="margin-top:14px"><h3>📋 클레임 유형</h3>';
-      const mx=Math.max.apply(null,Object.values(s.byType));
-      Object.keys(s.byType).sort((a,b)=>s.byType[b]-s.byType[a]).forEach(t=>{const v=s.byType[t];html+='<div class="stat-bar"><div class="lab"><span>'+escapeHtml(t)+'</span><b>'+v+'건</b></div><div class="track"><div class="fill" style="width:'+Math.round(v/mx*100)+'%"></div></div></div>';});
-      html+='</div>';
-      // 히스토리
-      html+='<div class="stat-card"><h3>🕘 클레임 히스토리 ('+s.history.length+')</h3>';
-      s.history.slice().reverse().forEach(it=>{
-        html+='<div class="hist-item"><div class="hist-top"><span class="hist-type">'+escapeHtml(it.type)+'</span>'+(it.room?'<span class="hist-room">'+escapeHtml(it.room)+'호</span>':'')+'</div><div class="hist-tour">'+escapeHtml(it.tour)+'</div>'+(it.memo?'<div class="hist-memo">'+escapeHtml(it.memo)+'</div>':'')+'</div>';
-      });
-      html+='</div>';
-    }else{
-      html+='<div class="stat-empty">이 호텔은 클레임 기록이 없어요.</div>';
-    }
-    vs.innerHTML=html;return;
-  }
-  // 목록 뷰
-  let html='<div class="section-title" style="margin-top:18px">호텔별 통계</div>';
-  if(keys.length===0){vs.innerHTML=html+'<div class="stat-empty">아직 등록된 호텔이 없어요.</div>';return;}
-  // 전체 요약
-  let totalClaims=0;keys.forEach(k=>totalClaims+=stats[k].claims);
-  html+='<div style="display:flex;gap:10px;margin-bottom:14px">'+
-    '<div class="stat-card" style="flex:1;text-align:center;margin:0"><div style="font-size:22px;font-weight:800;color:var(--accent)">'+keys.length+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">호텔 수</div></div>'+
-    '<div class="stat-card" style="flex:1;text-align:center;margin:0"><div style="font-size:22px;font-weight:800;color:var(--red)">'+totalClaims+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">총 클레임</div></div>'+
-    '</div>';
-  // 호텔 리스트 (클레임 많은 순 → 이용 많은 순)
-  const sorted=keys.sort((a,b)=>stats[b].claims-stats[a].claims||stats[b].uses-stats[a].uses);
-  html+=sorted.map(k=>{const s=stats[k];return '<div class="hotelstat-item" data-act="stathotel" data-key="'+encodeURIComponent(k)+'"><div class="hs-meta"><div class="hs-name">'+escapeHtml(s.name)+'</div><div class="hs-sub">'+(s.city?escapeHtml(s.city)+' · ':'')+'이용 '+s.tourIds.size+'회'+(s.claims?' · 클레임 '+s.claims+'건':'')+'</div></div>'+(s.claims?'<div class="hs-badge">'+s.claims+'</div>':'')+'<div class="tl-chev">›</div></div>';}).join('');
-  vs.innerHTML=html;
-}
-function claimSectionHtml(h){
-  const claims=h.claims||[];
-  const typeOpts=(sel)=>['<option value="">종류 선택</option>'].concat(CLAIM_TYPES.map(t=>'<option value="'+t+'" '+(sel===t?'selected':'')+'>'+t+'</option>')).concat(['<option value="__custom" '+(sel&&CLAIM_TYPES.indexOf(sel)<0?'selected':'')+'>직접 입력...</option>']).join('');
-  let html='<div class="claim-sec"><div class="ttl"><span>📋 고객 클레임 ('+claims.length+')</span></div>';
-  claims.forEach((cl,ci)=>{
-    const isCustom=cl.type&&CLAIM_TYPES.indexOf(cl.type)<0;
-    html+='<div class="claim-item" data-ci="'+ci+'">'+
-      '<div class="claim-row">'+
-        '<input class="claim-room" data-cf="room" value="'+escapeAttr(cl.room)+'" placeholder="호실">'+
-        '<select class="claim-type" data-cf="type">'+typeOpts(cl.type)+'</select>'+
-        '<button class="claim-del" data-act="claimdel">🗑</button>'+
-      '</div>'+
-      (isCustom?'<input class="claim-memo" data-cf="customtype" value="'+escapeAttr(cl.type)+'" placeholder="클레임 종류 직접 입력" style="margin-top:8px">':'')+
-      '<textarea class="claim-memo" data-cf="memo" placeholder="상세 내용 (수기 작성)">'+escapeHtml(cl.memo)+'</textarea>'+
-    '</div>';
+    });
   });
   html+='<button class="claim-add" data-act="claimadd">＋ 클레임 추가</button></div>';
   return html;
 }
-function cardEl(h,idx){
-  const c=document.createElement('div');c.className='card'+(h._open?' open':'');c.dataset.id=h.id;
-  const tags=[];
-  if(h.elevator===true)tags.push('<span class="tag on">엘리베이터 ✓</span>');
-  if(h.elevator===false)tags.push('<span class="tag off">엘리베이터 ✗</span>');
-  if(h.alcohol===true)tags.push('<span class="tag on">주류판매 ✓</span>');
-  if(h.alcohol===false)tags.push('<span class="tag off">주류 ✗</span>');
-  if(h.photos.length)tags.push('<span class="tag">📷 '+h.photos.length+'</span>');
-  const cityOpts=['<option value="">도시 선택</option>'].concat(CITIES.map(ci=>'<option value="'+ci+'" '+(h.city===ci?'selected':'')+'>'+ci+'</option>')).join('');
-  c.innerHTML=
-    '<div class="card-head" data-act="toggle">'+
-      '<div class="daybadge"><b>'+dayNum(h)+'</b><small>일차</small></div>'+
-      '<div class="meta"><p class="hname">'+(escapeHtml(h.name)||'(호텔명 미입력)')+'</p>'+
-      '<div class="hsub">'+(h.city?'<span class="citytag">'+h.city+'</span>':'도시 미지정')+'</div>'+
-      '<div class="tags">'+tags.join('')+'</div></div>'+
-      '<button class="quickdel" data-act="quickdel">🗑</button>'+
-      '<div class="chev">▶</div></div>'+
-    '<div class="card-body">'+
-      '<div class="field"><label>🏨 호텔명</label><input data-f="name" value="'+escapeAttr(h.name)+'" placeholder="호텔 이름"></div>'+
-      '<div class="two"><div class="field"><label>📅 일자</label><input data-f="dayLabel" value="'+escapeAttr(h.dayLabel)+'" placeholder="Day 1"></div><div class="field"><label>🌆 도시</label><select data-f="city">'+cityOpts+'</select></div></div>'+
-      '<div class="field" style="margin-bottom:0"><label>🏷️ 투어 분류 (복수 선택 가능)</label></div>'+
-      '<div class="typepick">'+TOUR_TYPES.map(t=>'<div class="tp '+((h.types||[]).includes(t)?'on':'')+'" data-type="'+t+'">'+((h.types||[]).includes(t)?'✓ ':'')+t+'</div>').join('')+'</div>'+
-      '<div class="field"><label>📶 와이파이 명 (SSID)</label><input data-f="wifiSsid" value="'+escapeAttr(h.wifiSsid)+'" placeholder="네트워크 이름"></div>'+
-      '<div class="two"><div class="field"><label>👤 이름 (접속 ID)</label><input data-f="wifiId" value="'+escapeAttr(h.wifiId)+'" placeholder="아이디 (없으면 비움)"></div><div class="field"><label>🔑 비밀번호</label><input data-f="wifiPw" value="'+escapeAttr(h.wifiPw)+'" placeholder="PW"></div></div>'+
-      '<div class="two"><div class="field"><label>🍳 조식 시간</label><input data-f="breakfast" value="'+escapeAttr(h.breakfast)+'" placeholder="07:00~09:30"></div><div class="field"><label>🍽️ 석식 시간</label><input data-f="dinner" value="'+escapeAttr(h.dinner)+'" placeholder="18:00~20:00"></div></div>'+
-      '<div class="two"><div class="field"><label>🏗️ 호텔 구조 / 층수</label><input data-f="structure" value="'+escapeAttr(h.structure)+'" placeholder="본관 5층, 별관 2층 등"></div><div class="field"><label>🛗 로비층 버튼</label><input data-f="lobbyBtn" value="'+escapeAttr(h.lobbyBtn)+'" placeholder="예: L, G, 0, 1"></div></div>'+
-      '<div class="field" style="margin-bottom:0"><label>🛗 엘리베이터</label></div><div class="toggle-row" data-grp="elevator"><div class="tg '+(h.elevator===true?'active-yes':'')+'" data-val="yes"><span class="ti">✓</span>있음</div><div class="tg '+(h.elevator===false?'active-no':'')+'" data-val="no"><span class="ti">✗</span>없음</div></div>'+
-      '<div class="field" style="margin-bottom:0"><label>🍷 주류 판매</label></div><div class="toggle-row" data-grp="alcohol"><div class="tg '+(h.alcohol===true?'active-yes':'')+'" data-val="yes"><span class="ti">✓</span>판매</div><div class="tg '+(h.alcohol===false?'active-no':'')+'" data-val="no"><span class="ti">✗</span>없음</div></div>'+
-      '<div class="field"><label>📸 메뉴판 / 가격 / 기타 사진</label><div class="photos" data-photos>'+h.photos.map((p,pi)=>'<div class="photo"><img src="'+p+'"><button class="x" data-act="rmphoto" data-pi="'+pi+'">×</button></div>').join('')+'<div class="addphoto" data-act="addphoto">＋</div></div></div>'+
-      '<div class="field"><label>📍 주소</label><textarea data-f="address" placeholder="호텔 주소">'+escapeHtml(h.address||'')+'</textarea></div>'+
-      '<button class="mapbtn" data-act="openmap">🗺️ 구글 지도에서 위치 보기</button>'+
-      '<div class="field"><label>📝 메모</label><textarea data-f="notes" placeholder="특이사항, 픽업 위치...">'+escapeHtml(h.notes)+'</textarea></div>'+
-      claimSectionHtml(h)+
-      '<button class="guestcopy" data-act="copyguest">📤 고객 안내문 복사 (카카오톡 붙여넣기)</button>'+
-      '<div class="card-actions"><button class="save-btn" data-act="savecard">✓ 저장하고 닫기</button><button class="del-btn" data-act="delete">🗑 삭제</button></div>'+
-    '</div>';
-  return c;
+function renderDetail(){
+  const h=hotelById(detailId);
+  const v=document.getElementById('viewDetail');
+  if(!h){mainView='hotels';render();return;}
+  let html='<button class="backlink" data-act="back">← 호텔 목록</button>';
+  html+='<div class="detail-head"><span class="dh-ic">🏨</span><input class="dh-name" data-f="name" value="'+escapeAttr(h.name)+'" placeholder="호텔 이름"></div>';
+  html+='<div class="summary-row"><div class="summary-box"><div class="num" style="color:var(--accent2)">'+h.visits.length+'</div><div class="lab">방문</div></div><div class="summary-box"><div class="num" style="color:var(--red)">'+h.claims.length+'</div><div class="lab">클레임</div></div></div>';
+  html+='<div class="card-block"><h3>기본 정보</h3>'+
+    '<div class="field"><label>🏙️ 도시</label><select data-f="city"><option value="">선택 안 함</option>'+CITIES.map(c=>'<option value="'+c+'" '+(h.city===c?'selected':'')+'>'+c+'</option>').join('')+'</select></div>'+
+    '<div class="field"><label>📍 주소</label><textarea data-f="address" placeholder="호텔 주소">'+escapeHtml(h.address)+'</textarea></div>'+
+    '<button class="mapbtn" data-act="openmap">🗺️ 구글 지도에서 보기</button>'+
+  '</div>';
+  html+='<div class="card-block"><h3>📶 와이파이</h3>'+
+    '<div class="field"><label>와이파이 명 (SSID)</label><input data-f="wifiSsid" value="'+escapeAttr(h.wifiSsid)+'" placeholder="네트워크 이름"></div>'+
+    '<div class="two"><div class="field"><label>아이디</label><input data-f="wifiId" value="'+escapeAttr(h.wifiId)+'" placeholder="(있으면)"></div>'+
+    '<div class="field"><label>비밀번호</label><input data-f="wifiPw" value="'+escapeAttr(h.wifiPw)+'" placeholder="비번"></div></div></div>';
+  html+='<div class="card-block"><h3>🍳 식사 · 구조</h3>'+
+    '<div class="two"><div class="field"><label>조식 시간</label><input data-f="breakfast" value="'+escapeAttr(h.breakfast)+'" placeholder="07:00~10:00"></div>'+
+    '<div class="field"><label>석식 시간</label><input data-f="dinner" value="'+escapeAttr(h.dinner)+'" placeholder="(있으면)"></div></div>'+
+    '<div class="two"><div class="field"><label>🏗️ 구조/층수</label><input data-f="structure" value="'+escapeAttr(h.structure)+'" placeholder="본관 5층 등"></div>'+
+    '<div class="field"><label>🛗 로비층 버튼</label><input data-f="lobbyBtn" value="'+escapeAttr(h.lobbyBtn)+'" placeholder="L, G, 0"></div></div></div>';
+  html+=toggleBtns(h);
+  html+=photosBlock(h);
+  html+='<div class="card-block"><h3>📝 메모</h3><div class="field"><textarea data-f="notes" placeholder="특이사항, 픽업 위치, 팁...">'+escapeHtml(h.notes)+'</textarea></div></div>';
+  html+=visitsBlock(h);
+  html+=claimsBlock(h);
+  html+='<button class="mapbtn" data-act="copyguest" style="margin-bottom:10px">📤 고객 안내문 복사 (카카오톡)</button>';
+  html+='<button class="delbtn" data-act="delhotel">🗑 이 호텔 삭제</button>';
+  v.innerHTML=html;
 }
-function escapeHtml(s){return(s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
-function escapeAttr(s){return(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 
-document.getElementById('btnSchedule').onclick=()=>document.getElementById('schedInput').click();
-document.getElementById('uploadZone').addEventListener('click',e=>{if(e.target.dataset.act==='rmsched'){state.schedule=null;save();render();}});
-document.getElementById('btnManual').onclick=function(){
-  const nm=prompt('새 투어 이름을 입력하세요.\n예) 260617 한진관광','');
-  createNewTour(nm&&nm.trim()?nm.trim():null);
-  state.schedule=null;mainView='current';filterCity='전체';hotelSearch='';
-  addHotel();
-};
-document.getElementById('sortSel').onchange=e=>{sortMode=e.target.value;render();};
-
-/* ===== 백업 / 복원 ===== */
-document.getElementById('btnBackup').onclick=function(){
-  const data={version:1,exportedAt:new Date().toISOString(),notes:state,library:loadLib()};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  const d=new Date();const stamp=d.getFullYear()+('0'+(d.getMonth()+1)).slice(-2)+('0'+d.getDate()).slice(-2);
-  a.href=url;a.download='투어호텔노트_백업_'+stamp+'.json';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-  toast('백업 파일을 저장했어요 💾');
-};
-document.getElementById('btnRestore').onclick=function(){document.getElementById('restoreInput').click();};
-document.getElementById('restoreInput').onchange=function(e){
-  const f=e.target.files[0];if(!f)return;
-  const fr=new FileReader();
-  fr.onload=()=>{
-    try{
-      const data=JSON.parse(fr.result);
-      if(!data||!data.notes||!Array.isArray(data.notes.hotels))throw new Error('형식 오류');
-      const cur=state.hotels.length;const lib=loadLib();const libCur=Object.keys(lib).length;
-      if(!confirm('복원하면 현재 데이터에 백업 내용이 합쳐집니다.\n\n현재 호텔 '+cur+'곳 / 사전 '+libCur+'곳\n백업 호텔 '+data.notes.hotels.length+'곳 / 사전 '+Object.keys(data.library||{}).length+'곳\n\n진행할까요?'))return;
-      if(!Array.isArray(state.tours))state.tours=[];
-      // 백업에 투어 정보가 있으면 그대로 병합
-      const btours=Array.isArray(data.notes.tours)?data.notes.tours:[];
-      const existTourIds=new Set(state.tours.map(t=>t.id));
-      btours.forEach(t=>{if(!existTourIds.has(t.id)){state.tours.push(t);existTourIds.add(t.id);}});
-      // 복원될 호텔 중 tourId가 없거나 매칭되는 투어가 없는 것들을 모아 새 투어로 묶기
-      const ids=new Set(state.hotels.map(h=>h.id));
-      const orphans=[];
-      const incoming=data.notes.hotels.filter(h=>!ids.has(h.id));
-      incoming.forEach(h=>{if(!h.tourId||!existTourIds.has(h.tourId))orphans.push(h);});
-      let restoreTourId=null;
-      if(orphans.length>0){
-        restoreTourId='t'+Date.now().toString(36);
-        const label=(data.exportedAt?String(data.exportedAt).slice(0,10):'')+' 복원';
-        state.tours.push({id:restoreTourId,name:'복원된 기록 ('+orphans.length+'곳)',createdAt:Date.now()});
-        existTourIds.add(restoreTourId);
-      }
-      incoming.forEach(h=>{
-        if(!h.tourId||!existTourIds.has(h.tourId)||orphans.indexOf(h)>=0)h.tourId=restoreTourId;
-        if(!Array.isArray(h.claims))h.claims=[];
-        state.hotels.push(h);
-      });
-      // 사전 병합 (백업이 더 최신이면 갱신)
-      const merged=loadLib();const bl=data.library||{};
-      Object.keys(bl).forEach(k=>{if(!merged[k]||(bl[k].savedAt||0)>(merged[k].savedAt||0))merged[k]=bl[k];});
-      saveLib(merged);
-      // 복원한 호텔은 지난 투어 탭에서 보여주기
-      if(restoreTourId){mainView='past';viewingPastTourId=restoreTourId;}
-      save();render();
-      toast('복원 완료 ✓ '+incoming.length+'곳 · 지난 투어에서 확인하세요');
-    }catch(err){alert('복원 실패: 올바른 백업 파일이 아니에요.');}
-  };
-  fr.readAsText(f);e.target.value='';
-};
-document.getElementById('cityChips').addEventListener('click',e=>{const ch=e.target.closest('.chip');if(ch){filterCity=ch.dataset.city;render();}});
-document.getElementById('bottomTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){mainView=b.dataset.view;if(mainView!=='past')viewingPastTourId=null;if(mainView!=='stats')statHotelKey=null;window.scrollTo(0,0);render();}});
-document.getElementById('hotelSearchInput').addEventListener('input',e=>{hotelSearch=e.target.value;renderCurrent();});
-document.getElementById('endTourWrap').addEventListener('click',e=>{
-  if(e.target.id==='btnEndTour'){
-    const nm=tourName(state.currentTourId);
-    if(!confirm('"'+nm+'" 투어를 종료할까요?\n\n종료하면 지난 투어로 이동하고, 현재 투어 화면은 비워집니다.\n(데이터는 지난 투어 탭에 그대로 보존됩니다)'))return;
-    state.currentTourId=null;
-    state.schedule=null;
-    hotelSearch='';filterCity='전체';
-    mainView='past';viewingPastTourId=null;
-    save();render();
-    toast('투어를 종료했어요 🏁 지난 투어에서 볼 수 있어요');
-  }
-  if(e.target.id==='btnDeleteAll'){
-    const cnt=currentHotels().length;
-    if(!confirm('현재 투어의 호텔 '+cnt+'곳을 전부 삭제할까요?\n\n⚠️ 카드의 사진·메모도 함께 삭제됩니다.\n이 작업은 되돌릴 수 없어요.\n(호텔 사전에 저장된 정보는 유지됩니다)'))return;
-    state.hotels=state.hotels.filter(h=>h.tourId!==state.currentTourId);
-    state.schedule=null;hotelSearch='';filterCity='전체';
-    save();render();
-    toast('현재 호텔 '+cnt+'곳을 삭제했어요');
-  }
-});
-document.getElementById('tourTitleBar').addEventListener('input',e=>{if(e.target.id==='tourNameInput'){const t=state.tours.find(x=>x.id===state.currentTourId);if(t){t.name=e.target.value;clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(state));flash();},500);}}});
-document.getElementById('viewPast').addEventListener('click',e=>{
-  const act=e.target.closest('[data-act]')?e.target.closest('[data-act]').dataset.act:null;
-  if(act==='opentour'){viewingPastTourId=e.target.closest('[data-tid]').dataset.tid;window.scrollTo(0,0);render();return;}
-  if(act==='pastback'){viewingPastTourId=null;render();return;}
-});
-document.getElementById('viewStats').addEventListener('click',e=>{
-  const act=e.target.closest('[data-act]')?e.target.closest('[data-act]').dataset.act:null;
-  if(act==='stathotel'){statHotelKey=decodeURIComponent(e.target.closest('[data-key]').dataset.key);window.scrollTo(0,0);render();return;}
-  if(act==='statback'){statHotelKey=null;render();return;}
-});
-
-/* OCR 모달 이벤트 */
-document.getElementById('ocrModal').addEventListener('click',e=>{
-  if(e.target.id==='ocrModal'){closeOcrModal();return;}
-  const cand=e.target.closest('.cand');
-  if(cand){const i=+cand.dataset.ci;ocrCandidates[i].sel=!ocrCandidates[i].sel;renderCandidates();return;}
-  const act=e.target.closest('[data-act]')?e.target.closest('[data-act]').dataset.act:null;
-  if(act==='manualadd'){const inp=document.getElementById('manualName');const v=inp.value.trim();if(v){ocrCandidates.push({name:v,city:guessCity(v),sel:true});renderCandidates();}return;}
-  if(act==='ocrcancel'){closeOcrModal();return;}
-  if(act==='ocradd'){
-    const picks=ocrCandidates.filter(c=>c.sel);
-    if(picks.length===0){toast('선택된 호텔이 없어요');return;}
-    if(!state.currentTourId)createNewTour();
-    let day=currentHotels().length;let autoCnt=0;
-    picks.forEach(c=>{day++;const h=blankHotel(c.name,'Day '+day,c.city);if(libFill(h)>0)autoCnt++;state.hotels.push(h);});
-    mainView='current';save();render();closeOcrModal();
-    toast(picks.length+'개 추가'+(autoCnt?' · '+autoCnt+'곳 정보 자동 불러옴 ✓':' ✓'));
-    return;
-  }
-});
-
-function addHotel(){
-  if(!state.currentTourId)createNewTour();
-  if(mainView!=='current'){mainView='current';viewingPastTourId=null;}
-  const dayNum=currentHotels().length+1;
-  const h=blankHotel('','Day '+dayNum,filterCity!=='전체'?filterCity:'');
-  h._open=true;state.hotels.push(h);save();render();
-  setTimeout(()=>{const el=document.querySelector('[data-id="'+h.id+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});},80);
+/* ---------- 통계 ---------- */
+function renderStats(){
+  const vs=document.getElementById('viewStats');
+  const byType={};let total=0;const hotelClaim=[];
+  DB.hotels.forEach(h=>{
+    if(h.claims.length)hotelClaim.push({name:h.name,city:h.city,n:h.claims.length,visits:h.visits.length});
+    h.claims.forEach(c=>{total++;const t=(c.type||'기타').trim()||'기타';byType[t]=(byType[t]||0)+1;});
+  });
+  const totalVisits=DB.hotels.reduce((s,h)=>s+h.visits.length,0);
+  let html='<div class="section-title" style="margin-top:18px">전체 요약</div>';
+  html+='<div class="summary-row"><div class="summary-box"><div class="num" style="color:var(--accent)">'+DB.hotels.length+'</div><div class="lab">호텔</div></div>'+
+    '<div class="summary-box"><div class="num" style="color:var(--accent2)">'+totalVisits+'</div><div class="lab">총 방문</div></div>'+
+    '<div class="summary-box"><div class="num" style="color:var(--red)">'+total+'</div><div class="lab">총 클레임</div></div></div>';
+  if(total===0){vs.innerHTML=html+'<div class="stat-empty">아직 클레임 기록이 없어요.<br>호텔 상세에서 클레임을 추가하면 집계돼요.</div>';return;}
+  html+='<div class="stat-card"><h3>📋 클레임 유형별</h3>';
+  const mx=Math.max.apply(null,Object.values(byType));
+  Object.keys(byType).sort((a,b)=>byType[b]-byType[a]).forEach(t=>{const val=byType[t];html+='<div class="stat-bar"><div class="lab"><span>'+escapeHtml(t)+'</span><b>'+val+'건</b></div><div class="track"><div class="fill" style="width:'+Math.round(val/mx*100)+'%"></div></div></div>';});
+  html+='</div>';
+  html+='<div class="stat-card"><h3>🏨 호텔별 클레임</h3>';
+  hotelClaim.sort((a,b)=>b.n-a.n);const hmx=hotelClaim[0].n;
+  hotelClaim.forEach(hc=>{html+='<div class="stat-bar"><div class="lab"><span>'+escapeHtml(hc.name)+'</span><b>'+hc.n+'건</b></div><div class="track"><div class="fill" style="width:'+Math.round(hc.n/hmx*100)+'%"></div></div></div>';});
+  html+='</div>';
+  html+='<div class="stat-card"><h3>🕘 클레임 히스토리</h3>';
+  const all=[];DB.hotels.forEach(h=>h.claims.forEach(c=>all.push({hotel:h.name,city:h.city,date:c.date,room:c.room,type:(c.type||'기타').trim()||'기타',memo:c.memo})));
+  all.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  all.forEach(it=>{html+='<div class="hist-item"><div class="hist-top"><span class="hist-type">'+escapeHtml(it.type)+'</span>'+(it.room?'<span class="hist-room">'+escapeHtml(it.room)+'호</span>':'')+'</div><div class="hist-meta">'+escapeHtml(it.hotel)+(it.date?' · '+escapeHtml(it.date):'')+'</div>'+(it.memo?'<div class="hist-memo">'+escapeHtml(it.memo)+'</div>':'')+'</div>';});
+  html+='</div>';
+  vs.innerHTML=html;
 }
-document.getElementById('schedInput').onchange=function(e){const f=e.target.files[0];if(!f)return;resizeImage(f,1400,d=>{
-  if(!state.currentTourId || currentHotels().length>0){
-    const nm=prompt('새 투어 이름을 입력하세요.\n예) 260617 한진관광','');
-    createNewTour(nm&&nm.trim()?nm.trim():null);
-  }
-  state.schedule=d;mainView='current';filterCity='전체';hotelSearch='';save();render();setTimeout(startOcrFromSchedule,150);
-});e.target.value='';};
-document.getElementById('photoInput').onchange=function(e){const files=[...e.target.files];if(!files.length||!activePhotoHotel)return;const h=state.hotels.find(x=>x.id===activePhotoHotel);if(!h)return;let done=0;files.forEach(f=>resizeImage(f,900,d=>{h.photos.push(d);done++;if(done===files.length){libStore(h);save();render();reopenAndScroll(h.id);}}));e.target.value='';};
 
-document.getElementById('list').addEventListener('click',e=>{
-  const card=e.target.closest('.card');if(!card)return;
-  const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;
+/* ===================== 이벤트 ===================== */
+document.getElementById('bottomTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){mainView=b.dataset.view;if(mainView!=='detail')detailId=null;window.scrollTo(0,0);render();}});
+document.getElementById('searchInput').addEventListener('input',e=>{search=e.target.value;renderHotels();});
+document.getElementById('cityChips').addEventListener('click',e=>{const c=e.target.closest('.chip');if(c){filterCity=c.dataset.city;renderHotels();}});
+
+document.getElementById('btnAddHotel').onclick=function(){
+  const name=prompt('호텔 이름을 입력하세요','');
+  if(name===null)return;
+  const h=blankHotel(name.trim(),filterCity!=='전체'?filterCity:'');
+  DB.hotels.push(h);saveDB();detailId=h.id;mainView='detail';window.scrollTo(0,0);render();
+};
+document.getElementById('hotelList').addEventListener('click',e=>{const it=e.target.closest('.hotel-item');if(it){detailId=it.dataset.id;mainView='detail';window.scrollTo(0,0);render();}});
+
+document.getElementById('viewDetail').addEventListener('click',e=>{
   const actEl=e.target.closest('[data-act]');const act=actEl?actEl.dataset.act:null;
-  if(act==='copyguest'){copyGuest(h,actEl);return;}
-  if(act==='openmap'){
-    if(!h.name&&!h.address){toast('호텔명이나 주소를 먼저 입력해 주세요');return;}
-    let q;
-    if(h.address&&h.address.trim()){q=encodeURIComponent((h.name?h.name+' ':'')+h.address.trim());}
-    else{const cityEn=CITY_EN[h.city]||h.city||'';q=encodeURIComponent(h.name+' '+cityEn+' Turkey');}
-    window.open('https://www.google.com/maps/search/?api=1&query='+q,'_blank');
-    return;
-  }
-  if(act==='savecard'){libStore(h);save();h._open=false;render();toast('저장되었습니다 ✓ (호텔 사전에 기록)');return;}
-  if(act==='quickdel'){if(confirm('"'+(h.name||'이 호텔')+'"을(를) 삭제할까요?')){state.hotels=state.hotels.filter(x=>x.id!==h.id);save();render();}return;}
-  if(act==='toggle'){h._open=!h._open;card.classList.toggle('open');return;}
-  if(act==='delete'){if(confirm('이 호텔을 삭제할까요?')){state.hotels=state.hotels.filter(x=>x.id!==h.id);save();render();}return;}
+  const h=hotelById(detailId);if(!h)return;
+  if(act==='back'){mainView='hotels';detailId=null;render();return;}
+  if(act==='delhotel'){if(confirm('"'+(h.name||'이 호텔')+'"을(를) 삭제할까요?\n방문·클레임·사진·메모가 모두 사라집니다.')){DB.hotels=DB.hotels.filter(x=>x.id!==h.id);saveDB();mainView='hotels';detailId=null;render();}return;}
+  const tg=e.target.closest('[data-tg]');
+  if(tg){const f=tg.dataset.tg;const val=tg.dataset.v==='1';h[f]=(h[f]===val)?null:val;saveDB();renderDetail();return;}
   if(act==='addphoto'){activePhotoHotel=h.id;document.getElementById('photoInput').click();return;}
-  if(act==='rmphoto'){h.photos.splice(+e.target.dataset.pi,1);libStore(h);save();render();reopenAndScroll(h.id);return;}
-  if(act==='claimadd'){if(!Array.isArray(h.claims))h.claims=[];h.claims.push({room:'',type:'',memo:''});save();render();reopenAndScroll(h.id);return;}
-  if(act==='claimdel'){const ci=+e.target.closest('[data-ci]').dataset.ci;h.claims.splice(ci,1);save();render();reopenAndScroll(h.id);return;}
-  const tp=e.target.closest('.tp');
-  if(tp){const t=tp.dataset.type;if(!Array.isArray(h.types))h.types=[];const i=h.types.indexOf(t);if(i>=0)h.types.splice(i,1);else h.types.push(t);save();render();reopenAndScroll(h.id);return;}
-  const tg=e.target.closest('.tg');
-  if(tg){const grp=tg.closest('[data-grp]').dataset.grp;const val=tg.dataset.val==='yes';h[grp]=(h[grp]===val)?null:val;save();render();reopenAndScroll(h.id);}
+  if(act==='rmphoto'){h.photos.splice(+actEl.dataset.pi,1);saveDB();renderDetail();return;}
+  if(act==='openmap'){
+    if(!h.name&&!h.address){flash('호텔명이나 주소를 입력해 주세요');return;}
+    let q;if(h.address&&h.address.trim())q=encodeURIComponent((h.name?h.name+' ':'')+h.address.trim());
+    else{const en=CITY_EN[h.city]||h.city||'';q=encodeURIComponent(h.name+' '+en+' Turkey');}
+    window.open('https://www.google.com/maps/search/?api=1&query='+q,'_blank');return;
+  }
+  if(act==='copyguest'){copyGuest(h);return;}
+  if(act==='visitadd'){const d=document.getElementById('visitDate').value||todayStr();h.visits.push({id:uid(),date:d});saveDB();renderDetail();flash('방문 추가됨 ✓');return;}
+  if(act==='visitdel'){const vid=actEl.dataset.vid;h.visits=h.visits.filter(v=>v.id!==vid);saveDB();renderDetail();return;}
+  if(act==='claimadd'){
+    const last=h.visits.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0];
+    h.claims.push({id:uid(),date:last?last.date:todayStr(),room:'',type:'',memo:''});saveDB();renderDetail();return;
+  }
+  if(act==='claimdel'){const idx=+e.target.closest('[data-idx]').dataset.idx;h.claims.splice(idx,1);saveDB();renderDetail();return;}
 });
-document.getElementById('list').addEventListener('change',e=>{
-  if(e.target.dataset.f==='city'){const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);if(h){h.city=e.target.value;const n=libFill(h);save();render();reopenAndScroll(h.id);if(n>0)toast('저장된 정보 '+n+'건 자동 불러옴 ✓');}return;}
-  if(e.target.dataset.cf==='type'){const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);const ci=+e.target.closest('[data-ci]').dataset.ci;if(h&&h.claims[ci]){const v=e.target.value;h.claims[ci].type=(v==='__custom')?' ':v;save();render();reopenAndScroll(h.id);}return;}
-});
-let saveTimer;
-document.getElementById('list').addEventListener('input',e=>{
+
+document.getElementById('viewDetail').addEventListener('input',e=>{
+  const h=hotelById(detailId);if(!h)return;
   const cf=e.target.dataset.cf;
-  if(cf){const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;const ci=+e.target.closest('[data-ci]').dataset.ci;if(!h.claims[ci])return;
-    if(cf==='room')h.claims[ci].room=e.target.value;
-    else if(cf==='memo')h.claims[ci].memo=e.target.value;
-    else if(cf==='customtype')h.claims[ci].type=e.target.value;
-    clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(state));flash();},500);return;}
-  const f=e.target.dataset.f;if(!f||f==='city')return;const card=e.target.closest('.card');const h=state.hotels.find(x=>x.id===card.dataset.id);if(!h)return;h[f]=e.target.value;if(f==='name')card.querySelector('.hname').textContent=h.name||'(호텔명 미입력)';clearTimeout(saveTimer);saveTimer=setTimeout(()=>{libStore(h);localStorage.setItem(KEY,JSON.stringify(state));flash();},600);
+  if(cf){const idx=+e.target.closest('[data-idx]').dataset.idx;const c=h.claims[idx];if(!c)return;
+    if(cf==='room')c.room=e.target.value;else if(cf==='memo')c.memo=e.target.value;else if(cf==='customtype')c.type=e.target.value;
+    debouncedSave();return;}
+  const f=e.target.dataset.f;if(!f)return;
+  h[f]=e.target.value;
+  debouncedSave();
 });
-function reopenAndScroll(id){const h=state.hotels.find(x=>x.id===id);if(h)h._open=true;render();setTimeout(()=>{const el=document.querySelector('[data-id="'+id+'"]');if(el)el.scrollIntoView({block:'center'});},50);}
+document.getElementById('viewDetail').addEventListener('change',e=>{
+  const h=hotelById(detailId);if(!h)return;
+  if(e.target.dataset.f==='city'){h.city=e.target.value;saveDB();renderDetail();return;}
+  if(e.target.dataset.cf==='type'){const idx=+e.target.closest('[data-idx]').dataset.idx;const c=h.claims[idx];if(c){const v=e.target.value;c.type=(v==='__c')?' ':v;saveDB();renderDetail();}return;}
+});
+
+document.getElementById('photoInput').onchange=function(e){
+  const files=[...e.target.files];if(!files.length||!activePhotoHotel)return;
+  const h=hotelById(activePhotoHotel);if(!h)return;let done=0;
+  files.forEach(f=>resizeImage(f,900,d=>{if(h.photos.length<8)h.photos.push(d);done++;if(done===files.length){saveDB();renderDetail();}}));
+  e.target.value='';
+};
 function resizeImage(file,maxW,cb){const img=new Image();const fr=new FileReader();fr.onload=()=>{img.onload=()=>{let w=img.width,hh=img.height;if(w>maxW){hh=hh*maxW/w;w=maxW;}const cv=document.createElement('canvas');cv.width=w;cv.height=hh;cv.getContext('2d').drawImage(img,0,0,w,hh);cb(cv.toDataURL('image/jpeg',0.72));};img.src=fr.result;};fr.readAsDataURL(file);}
-/* 첫 화면: 현재 투어에 호텔이 있으면 현재투어, 없으면 신규투어 */
-if(!state.currentTourId || currentHotels().length===0)mainView='new';
+
+function buildGuestMessage(h){
+  const L=[];L.push('🏨 오늘의 숙소 안내');L.push('');L.push('● '+(h.name||''));
+  if(h.wifiSsid||h.wifiPw){L.push('');L.push('📶 와이파이');if(h.wifiSsid)L.push('  - 와이파이 명: '+h.wifiSsid);if(h.wifiId)L.push('  - 아이디: '+h.wifiId);if(h.wifiPw)L.push('  - 비밀번호: '+h.wifiPw);}
+  if(h.breakfast){L.push('');L.push('🍳 익일 조식 제공 시간  '+h.breakfast.split('~')[0].trim()+' 부터');}
+  if(h.lobbyBtn){L.push('');L.push('🛗 로비층은 엘리베이터에서 ['+h.lobbyBtn+'] 버튼을 눌러주세요.');}
+  L.push('');L.push('와이파이 접속이 어려우신 분들은 로비 또는 석식 시간에 제가 도움드리겠습니다.');
+  return L.join('\n');
+}
+function copyGuest(h){const msg=buildGuestMessage(h);if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(()=>flash('안내문 복사됨 ✓ 카톡에 붙여넣기')).catch(()=>fallbackCopy(msg));}else fallbackCopy(msg);}
+function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');flash('안내문 복사됨 ✓');}catch(e){alert(t);}document.body.removeChild(ta);}
+
+document.getElementById('btnBackup').onclick=function(){
+  const blob=new Blob([JSON.stringify({version:'db_v1',exportedAt:new Date().toISOString(),db:DB},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='투어호텔노트_백업_'+todayStr().replace(/-/g,'')+'.json';a.click();
+  flash('백업 파일을 저장했어요 ✓');
+};
+document.getElementById('btnRestore').onclick=()=>document.getElementById('restoreInput').click();
+document.getElementById('restoreInput').onchange=function(e){
+  const f=e.target.files[0];if(!f)return;const fr=new FileReader();
+  fr.onload=()=>{try{
+    const data=JSON.parse(fr.result);
+    if(data.db&&Array.isArray(data.db.hotels)){
+      if(!confirm('복원하면 현재 '+DB.hotels.length+'곳에 백업 '+data.db.hotels.length+'곳이 합쳐집니다.\n같은 호텔(도시+이름)은 방문·클레임이 합쳐져요.\n진행할까요?'))return;
+      mergeHotels(data.db.hotels);saveDB();mainView='hotels';render();flash('복원 완료 ✓');
+    }else if(data.notes){
+      if(!confirm('구버전 백업이네요. 현재 데이터에 합칠까요?'))return;
+      mergeOldBackup(data);saveDB();mainView='hotels';render();flash('구버전 백업 복원 완료 ✓');
+    }else throw new Error('형식 오류');
+  }catch(err){alert('복원 실패: 올바른 백업 파일이 아니에요.');}};
+};
+function mergeHotels(incoming){
+  const idx={};DB.hotels.forEach(h=>idx[normKey(h.city,h.name)]=h);
+  incoming.forEach(o=>{
+    const k=normKey(o.city,o.name);const ex=idx[k];
+    if(!ex){const nh=Object.assign(blankHotel(o.name,o.city),o);nh.id=uid();if(!Array.isArray(nh.visits))nh.visits=[];if(!Array.isArray(nh.claims))nh.claims=[];if(!Array.isArray(nh.photos))nh.photos=[];DB.hotels.push(nh);idx[k]=nh;}
+    else{
+      ['address','wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn'].forEach(f=>{if(o[f]&&!ex[f])ex[f]=o[f];});
+      if(ex.elevator===null&&o.elevator!=null)ex.elevator=o.elevator;
+      if(ex.alcohol===null&&o.alcohol!=null)ex.alcohol=o.alcohol;
+      if(o.notes&&o.notes.length>(ex.notes||'').length)ex.notes=o.notes;
+      (o.photos||[]).forEach(p=>{if(ex.photos.indexOf(p)<0&&ex.photos.length<8)ex.photos.push(p);});
+      (o.visits||[]).forEach(v=>{if(!ex.visits.some(x=>x.date===v.date))ex.visits.push({id:uid(),date:v.date});});
+      (o.claims||[]).forEach(c=>ex.claims.push({id:uid(),date:c.date||'',room:c.room||'',type:c.type||'기타',memo:c.memo||''}));
+    }
+  });
+}
+function mergeOldBackup(data){
+  const incoming=[];const byKey={};
+  const ensure=(name,city)=>{const k=normKey(city,name);if(!byKey[k]){byKey[k]=blankHotel(name,city);incoming.push(byKey[k]);}return byKey[k];};
+  const lib=data.library||{};
+  Object.keys(lib).forEach(k=>{const r=lib[k];if(!r||!r.name)return;const h=ensure(r.name,r.city||'');['address','wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn'].forEach(f=>{if(r[f]&&!h[f])h[f]=r[f];});if(r.photos&&r.photos.length&&!h.photos.length)h.photos=r.photos.slice();if(r.notes&&!h.notes)h.notes=r.notes;});
+  (data.notes.hotels||[]).forEach(o=>{if(!o.name)return;const h=ensure(o.name,o.city||'');['address','wifiSsid','wifiId','wifiPw','breakfast','dinner','structure','lobbyBtn'].forEach(f=>{if(o[f]&&!h[f])h[f]=o[f];});if(o.notes&&o.notes.length>(h.notes||'').length)h.notes=o.notes;(o.photos||[]).forEach(p=>{if(h.photos.indexOf(p)<0&&h.photos.length<8)h.photos.push(p);});(o.claims||[]).forEach(c=>{if(c&&(c.room||c.type||c.memo))h.claims.push({id:uid(),date:'',room:c.room||'',type:(c.type||'기타').trim()||'기타',memo:c.memo||''});});});
+  mergeHotels(incoming);
+}
+
 render();
-if('serviceWorker' in navigator){const sw='const C="tourhotel-v3";self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>self.clients.claim());self.addEventListener("fetch",e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))});';const blob=new Blob([sw],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});}
 </script>
 </body>
 </html>
