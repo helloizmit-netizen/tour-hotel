@@ -737,7 +737,7 @@ function App(){
         h("div",{style:{borderTop:"1px dashed var(--border)",paddingTop:10,marginTop:4,marginBottom:8}},
           h("div",{style:{fontSize:10,color:"#f87171",marginBottom:10,fontWeight:600}},"한진관광 전용 지출"),
           ...EXP_TOGGLE.map(item=>{
-            const on=(form.expToggle||{})[item.key]!==false&&(form.expToggle||{}).hasOwnProperty(item.key)?(form.expToggle||{})[item.key]:false;
+            const on=!!(form.expToggle||{})[item.key];
             return h("div",{key:item.key,style:{display:"flex",alignItems:"center",gap:8,marginBottom:12,opacity:on?1:0.5}},
               h(Toggle,{on,onChange:v=>setForm(f=>({...f,expToggle:{...(f.expToggle||defExpTog()),[item.key]:v}})),color:"#f87171"}),
               h("label",{style:{fontSize:12,color:"#f87171",fontWeight:600,minWidth:110}},item.label),
@@ -931,6 +931,33 @@ function App(){
             ))
           )
         ),
+        // 지출 세부 항목 카드
+        h("div",{style:S.cc},
+          h("div",{style:{fontSize:12,color:"var(--sub)",fontWeight:600,marginBottom:14}},"지출 세부 항목"),
+          (()=>{
+            const expRows=[
+              ...EXP.map(i=>({label:i.label,value:records.reduce((s,r)=>s+pf(r[i.key]),0)})),
+              {label:"🏨 이스탄불 호텔",value:records.reduce((s,r)=>s+((r.expToggle||{}).istHotel?pf(r.istHotel):0),0)},
+              ...(()=>{const ex={};records.forEach(r=>(r.extraExp||[]).forEach(e=>{const k=e.label||"기타";ex[k]=(ex[k]||0)+pf(e.amount);}));return Object.entries(ex).map(([label,value])=>({label,value}));})(),
+            ].filter(d=>d.value>0).sort((a,b)=>b.value-a.value);
+            const maxE=Math.max(...expRows.map(d=>d.value),1);
+            const totalExp=expRows.reduce((s,d)=>s+d.value,0);
+            return expRows.length===0
+              ? h("div",{style:{textAlign:"center",color:"var(--sub)",fontSize:12,padding:20}},"지출 데이터 없음")
+              : h("div",null,
+                  h("div",{style:{fontSize:11,color:"#f87171",fontWeight:700,marginBottom:12}},"총 지출: "+fmt(totalExp)+(eurRate?" ("+fmt(totalExp*eurRate,"KRW")+")":"")),
+                  ...expRows.map((d,i)=>h("div",{key:i,style:{marginBottom:10}},
+                    h("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}},
+                      h("span",{style:{fontSize:12,color:"var(--text)",fontWeight:600}},d.label),
+                      h("span",{style:{fontSize:13,fontWeight:700,color:"#f87171"}},fmt(d.value))
+                    ),
+                    h("div",{style:{background:"var(--bg3)",borderRadius:4,height:5,overflow:"hidden"}},
+                      h("div",{style:{height:"100%",width:Math.round(d.value/maxE*100)+"%",background:"#f87171",borderRadius:4}})
+                    )
+                  ))
+                );
+          })()
+        ),
         statTab==="score"&&h(React.Fragment,null,
           h("div",{style:S.cc},
             h("div",{style:{fontSize:12,color:"var(--sub)",fontWeight:600,marginBottom:12}},"🏆 종합 성과"),
@@ -1109,8 +1136,8 @@ function App(){
       h("div",{style:{background:"var(--card)",borderRadius:14,padding:"14px 16px",border:"1px solid var(--border)"}},
         h("div",{style:{fontSize:14,fontWeight:700,color:"var(--text)",marginBottom:8}},"ℹ️ 앱 정보"),
         h("div",{style:{fontSize:12,color:"var(--sub)",lineHeight:1.8}},
-          h("div",null,"🌍 Emre 계산기 v6.03"),
-          h("div",null,"🔧 v6.03: 통계 세부항목에 지출 표시"),
+          h("div",null,"🌍 Emre 계산기 v6.04"),
+          h("div",null,"🔧 v6.04: 지출 토글 버그수정 + 지출 통계 추가"),
           h("div",null,"🔒 모든 데이터는 이 기기에만 저장"),
           h("div",null,"💱 환율: 유럽중앙은행 기준 (1일 1회)"),
           h("div",null,"🏆 점수: 최근 "+scoreCfg.movingN+"개 이동평균 기준"),
