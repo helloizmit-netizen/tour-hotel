@@ -733,21 +733,19 @@ function App(){
       ),
       // 지출
       h(Accordion,{title:"📤 지출 / 경비",total:tExp(form),color:"#f87171",accent:"#dc2626",badge:"Expense",open:accOpen.exp,onToggle:()=>toggleAcc("exp")},
-        ...EXP.map(item=>h(InputRow,{key:item.key,label:item.label,value:form[item.key],onChange:setF(item.key),color:"#f87171"})),
-        h("div",{style:{borderTop:"1px dashed var(--border)",paddingTop:10,marginTop:4,marginBottom:8}},
-          h("div",{style:{fontSize:10,color:"#f87171",marginBottom:10,fontWeight:600}},"한진관광 전용 지출"),
-          ...EXP_TOGGLE.map(item=>{
-            const on=!!(form.expToggle||{})[item.key];
-            return h("div",{key:item.key,style:{display:"flex",alignItems:"center",gap:8,marginBottom:12,opacity:on?1:0.5}},
-              h(Toggle,{on,onChange:v=>setForm(f=>({...f,expToggle:{...(f.expToggle||defExpTog()),[item.key]:v}})),color:"#f87171"}),
-              h("label",{style:{fontSize:12,color:"#f87171",fontWeight:600,minWidth:110}},item.label),
-              on&&h("div",{style:{display:"flex",alignItems:"center",gap:4,flex:1}},
-                h("span",{style:{color:"#475569",fontSize:13}},"€"),
-                h("input",{type:"number",inputMode:"decimal",placeholder:"0",value:form[item.key]||"",onChange:e=>setF(item.key)(e.target.value),
-                  style:{flex:1,background:"var(--bg2)",border:"1px solid "+(pf(form[item.key])>0?"#dc2626":"var(--border)"),borderRadius:8,padding:"8px 10px",color:"var(--text)",fontSize:13,outline:"none",textAlign:"right"}})
-              )
-            );
-          })
+        h(InputRow,{label:"🍿 주전부리",value:form.snack,onChange:setF("snack"),color:"#f87171"}),
+        h(InputRow,{label:"🥤 음료",value:form.drink,onChange:setF("drink"),color:"#f87171"}),
+        h("div",{style:{borderTop:"1px dashed var(--border)",paddingTop:10,marginTop:4,marginBottom:4}},
+          h("div",{style:{fontSize:10,color:"#f87171",marginBottom:10,fontWeight:600}},"한진관광 전용 지출")
+        ),
+        h("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:12,opacity:!!(form.expToggle||{}).istHotel?1:0.5}},
+          h(Toggle,{on:!!(form.expToggle||{}).istHotel,onChange:v=>setForm(f=>({...f,expToggle:{...(f.expToggle||defExpTog()),istHotel:v}})),color:"#f87171"}),
+          h("label",{style:{fontSize:12,color:"#f87171",fontWeight:600,minWidth:110}},"🏨 이스탄불 호텔"),
+          !!(form.expToggle||{}).istHotel&&h("div",{style:{display:"flex",alignItems:"center",gap:4,flex:1}},
+            h("span",{style:{color:"#475569",fontSize:13}},"€"),
+            h("input",{type:"number",inputMode:"decimal",placeholder:"0",value:form.istHotel||"",onChange:e=>setF("istHotel")(e.target.value),
+              style:{flex:1,background:"var(--bg2)",border:"1px solid "+(pf(form.istHotel)>0?"#dc2626":"var(--border)"),borderRadius:8,padding:"8px 10px",color:"var(--text)",fontSize:13,outline:"none",textAlign:"right"}})
+          )
         ),
         h(ExtraItems,{items:form.extraExp||[],onChange:v=>setForm(f=>({...f,extraExp:v})),color:"#f87171",addLabel:"+ 지출 추가"})
       ),
@@ -1136,8 +1134,8 @@ function App(){
       h("div",{style:{background:"var(--card)",borderRadius:14,padding:"14px 16px",border:"1px solid var(--border)"}},
         h("div",{style:{fontSize:14,fontWeight:700,color:"var(--text)",marginBottom:8}},"ℹ️ 앱 정보"),
         h("div",{style:{fontSize:12,color:"var(--sub)",lineHeight:1.8}},
-          h("div",null,"🌍 Emre 계산기 v6.04"),
-          h("div",null,"🔧 v6.04: 지출 토글 버그수정 + 지출 통계 추가"),
+          h("div",null,"🌍 Emre 계산기 v6.05"),
+          h("div",null,"🔧 v6.05: 이스탄불 호텔 토글 표시 버그 수정"),
           h("div",null,"🔒 모든 데이터는 이 기기에만 저장"),
           h("div",null,"💱 환율: 유럽중앙은행 기준 (1일 1회)"),
           h("div",null,"🏆 점수: 최근 "+scoreCfg.movingN+"개 이동평균 기준"),
